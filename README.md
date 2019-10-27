@@ -14,28 +14,27 @@ Mark Engine 1.0
 * 模板引擎分离出核心
 * 内部功能中间件化
 * SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
 * 对IDE更加友好
 * 统一和精简大量用法
 
 ## 安装
 
 ~~~
-composer create-project tianfuunion/markengine mark 1.0.*-dev
+composer create-project tianfuunion/framework mark 1.0.*-dev
 ~~~
 
 如果需要更新框架使用
 ~~~
-composer update tianfuunion/markengine
+composer update tianfuunion/framework
 ~~~
 
 ## 文档
 
-[完全开发手册](https://www.kancloud.cn/tianfuunion/markengine/content)
+[完全开发手册](https://www.kancloud.cn/tianfuunion/framework/content)
 
 ## 参与开发
 
-请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/markengine)。
+请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/framework)。
 
 ## 版权信息
 
