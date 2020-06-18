@@ -20,21 +20,21 @@ Mark Engine 1.0
 ## 安装
 
 ~~~
-composer create-project tianfuunion/framework mark 1.0.*-dev
+composer create-project tianfuunion/markengine mark 1.0.*-dev
 ~~~
 
 如果需要更新框架使用
 ~~~
-composer update tianfuunion/framework
+composer update tianfuunion/markengine
 ~~~
 
 ## 文档
 
-[完全开发手册](https://www.kancloud.cn/tianfuunion/framework/content)
+[完全开发手册](https://www.kancloud.cn/tianfuunion/markengine/content)
 
 ## 参与开发
 
-请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/framework)。
+请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/markengine)。
 
 ## 版权信息
 
