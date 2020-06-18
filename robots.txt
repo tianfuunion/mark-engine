@@ -1,6 +1,0 @@
-#
-# robots.txt for TianFu Union!
-#
-
-User-agent: *
-Disallow: /
