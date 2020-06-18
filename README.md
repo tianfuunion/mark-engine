@@ -38,11 +38,11 @@ composer update tianfuunion/markengine
 
 ## 版权信息
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
+MarkEngine遵循Apache2开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2019 by TianFu Union (https://www.tianfuunion.cn)
+版权所有Copyright © 2007-2020 by TianFu Union (https://www.tianfuunion.cn)
 
 All rights reserved。
 
