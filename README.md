@@ -18,14 +18,8 @@ Mark Engine 1.0
 * 统一和精简大量用法
 
 ## 安装
-
 ~~~
-composer create-project tianfuunion/markengine mark 1.0.*-dev
-~~~
-
-如果需要更新框架使用
-~~~
-composer update tianfuunion/markengine
+composer require tianfuunion/mark-engine 1.0.*-dev
 ~~~
 
 ## 文档
@@ -38,7 +32,7 @@ composer update tianfuunion/markengine
 
 ## 版权信息
 
-MarkEngine遵循MulanPSL-2.0开源协议发布，并提供免费使用。
+MarkEngine遵循MIT开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
