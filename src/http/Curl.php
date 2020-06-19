@@ -290,7 +290,7 @@ class Curl {
         $this->content_type = 'application/octet-stream';
 
         if (empty(trim($url))) {
-            Log::error('Curl::download(URL cannot be empty)');
+            // Log::error('Curl::download(URL cannot be empty)');
 
             return array('file_name' => '', 'save_path' => '', 'error' => 1);
         }
@@ -328,7 +328,7 @@ class Curl {
             !file_exists($this->filePath)
             && !mkdir($concurrentDirectory = $this->filePath, 0777, true)
             && !is_dir($concurrentDirectory)) {
-            Log::error('Curl::download() The storage path can not be empty.');
+            // Log::error('Curl::download() The storage path can not be empty.');
 
             return array('file_name' => '', 'save_path' => '', 'error' => 5);
         }
@@ -560,13 +560,13 @@ class Curl {
             $finfo = new finfo(FILEINFO_MIME_TYPE);
             $mime = $finfo->file(realpath($file));
 
-            Log::info('Curl::appendFiles(文件存在)' . $key . ' ' . json_encode($file, JSON_UNESCAPED_UNICODE) . ' Mime:' . $mime);
+            // Log::info('Curl::appendFiles(文件存在)' . $key . ' ' . json_encode($file, JSON_UNESCAPED_UNICODE) . ' Mime:' . $mime);
             $this->fileData[] = curl_file_create(realpath($file), $mime, basename($file));
             $this->upfilesize += filesize($file);
         } else {
-            Log::info('Curl::appendFiles(文件不存在)' . $key . ' ' . json_encode($file, JSON_UNESCAPED_UNICODE));
+            // Log::info('Curl::appendFiles(文件不存在)' . $key . ' ' . json_encode($file, JSON_UNESCAPED_UNICODE));
         }
-        Log::info('Curl::appendFile.formData：' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
+        // Log::info('Curl::appendFile.formData：' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
 
         /*
         if(!empty($key)){
@@ -736,10 +736,10 @@ class Curl {
                     // curl_setopt($this->curl, CURLOPT_POSTFIELDS, $this->formData);
                     curl_setopt($this->curl, CURLOPT_POSTFIELDS, http_build_query($this->formData));
                 }
-                Log::info('Curl:Execute(Post.formData)' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
+                // Log::info('Curl:Execute(Post.formData)' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
                 break;
             case 'upload':
-                Log::debug('Curl:Execute(UpLoad.formData)' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
+                // Log::debug('Curl:Execute(UpLoad.formData)' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
 
                 // curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, true);
                 // curl_setopt($this->curl, CURLOPT_MAXREDIRS, 3);
@@ -815,7 +815,7 @@ class Curl {
                 // curl_setopt($this->curl, CURLOPT_FOLLOWLOCATION, 1);
                 break;
             default:
-                Log::error('Curl:Execute()' . $this->method);
+                // Log::error('Curl:Execute()' . $this->method);
                 break;
         }
 
@@ -824,14 +824,14 @@ class Curl {
 
         if ($result === false) {
             $this->errmsg = curl_error($this->curl);
-            Log::info('Curl：ErrMsg：' . $this->errmsg);
+            // Log::info('Curl：ErrMsg：' . $this->errmsg);
 
             return 'Curl Error：' . $this->errmsg;
             // 检查是否有错误发生
         }
         if ($this->errno = curl_errno($this->curl)) {
             $this->errmsg = curl_strerror($this->errno);
-            Log::info('Curl：ErrNo：' . $this->errno . ' ErrMsg：' . $this->errmsg);
+            // Log::info('Curl：ErrNo：' . $this->errno . ' ErrMsg：' . $this->errmsg);
 
             return 'Curl Error：' . curl_strerror($this->errno);
         }
@@ -860,7 +860,7 @@ class Curl {
             return false;
         }
 
-        Log::info('Curl.Info：(' . gettype($result) . ')' . $result);
+        // Log::info('Curl.Info：(' . gettype($result) . ')' . $result);
 
         return $result;
     }
@@ -966,7 +966,7 @@ class Curl {
      * @return $this
      */
     public function __set(string $name, $value) {
-        Log::debug('Curl::__set()' . $name . '：' . json_encode($value, JSON_UNESCAPED_UNICODE));
+        // Log::debug('Curl::__set()' . $name . '：' . json_encode($value, JSON_UNESCAPED_UNICODE));
         $this->$name = $value;
         return $this;
     }
@@ -981,7 +981,7 @@ class Curl {
      * @return mixed
      */
     public function __get(string $name) {
-        Log::debug('Curl::__get()' . $name);
+        // Log::debug('Curl::__get()' . $name);
 
         return $this->$name;
     }
@@ -996,7 +996,7 @@ class Curl {
      * @return boolean
      */
     public function __isset(string $name): bool {
-        Log::debug('Curl::__isset()' . $name);
+        // Log::debug('Curl::__isset()' . $name);
 
         return isset($name);
     }
@@ -1008,7 +1008,7 @@ class Curl {
      * @return $this
      */
     public function __call($method, $params) {
-        log::debug('Curl::Call(' . json_encode($method) . ')' . json_encode($params) . " " . gettype($params));
+        // log::debug('Curl::Call(' . json_encode($method) . ')' . json_encode($params) . " " . gettype($params));
 
         list($key, $value) = $params;
         $this->$key = $value;

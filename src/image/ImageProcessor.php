@@ -69,7 +69,8 @@ class ImageProcessor {
     private $fileinfo; // 文件信息，文件名，后缀
     private $param; //请求参数
     // private $processor; // 图片处理规则
-    private $loginfo;
+
+    private $logcat;
 
     /**
      * ImageProcessor constructor.
@@ -81,7 +82,7 @@ class ImageProcessor {
         if ($param != null) {
             $this->param = $param;
         } else {
-            $this->loginfo[] = 'ImageProcessor::__construct(param is Null)';
+            $this->logcat("debug", 'ImageProcessor::__construct(param is Null)');
         }
 
         /*
@@ -111,7 +112,7 @@ class ImageProcessor {
             // $this->isDirectory($this->file_path);
             // $this->isDirectory($this->video_path);
         } else {
-            $this->loginfo[] = 'ImageProcessor::isDirectory()' . $path;
+            $this->Logcat('debug', 'ImageProcessor::isDirectory()' . $path);
         }
 
     }
@@ -329,7 +330,7 @@ class ImageProcessor {
             $this->param['format'] = 'jpeg';
         }
 
-        $this->Logcat('info',"ImageProcessor::getImage()" . json_encode($this->param));
+        $this->Logcat('info', "ImageProcessor::getImage()" . json_encode($this->param));
 
         $sourceFile = $this->getSourceFile();
 
@@ -764,7 +765,7 @@ class ImageProcessor {
      *
      * @param $imgsrc
      */
-    public function get_img($imgsrc) {
+    public function getImg($imgsrc) {
         $info = getimagesize($imgsrc);
         $imgExt = image_type_to_extension($info[2], false);  //获取文件后缀
         $fun = "imagecreatefrom{$imgExt}";
@@ -783,6 +784,9 @@ class ImageProcessor {
         $this->logcat[] = array($level, $message);
     }
 
+    /**
+     * @return mixed
+     */
     public function getLog() {
         return $this->logcat;
     }

@@ -5,7 +5,7 @@ declare (strict_types=1);
 namespace mark\response;
 
 use think\Response;
-use think\facade\Log;
+
 use think\facade\Request;
 use think\facade\Config;
 use think\facade\View;
@@ -297,7 +297,7 @@ class Responsive extends Response {
                 return view($template);
             }
 
-            Log::error('Responsive::display(Template Not Found)' . $template);
+            // Log::error('Responsive::display(Template Not Found)' . $template);
         }
 
         return response(json_encode($response, JSON_UNESCAPED_UNICODE));

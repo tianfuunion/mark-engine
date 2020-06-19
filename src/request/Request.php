@@ -427,7 +427,7 @@ class Request {
      *
      * @return string
      */
-    public static function domain($url = "", bool $port = false) {
+    public static function domain($url = "", $port = false) {
         $host = strtolower(!empty($url) ? parse_url($url, PHP_URL_HOST) : $_SERVER['HTTP_HOST']);
 
         //查看是几级域名
@@ -1285,7 +1285,7 @@ class Request {
      *
      * @param string $name 名称
      *
-     * @return null|array|UploadedFile
+     * @return null|array
      */
     public function file(string $name = '') {
         $files = $this->file;
@@ -1316,6 +1316,13 @@ class Request {
         return $array;
     }
 
+    /**
+     * @param array  $files
+     * @param string $name
+     *
+     * @return array
+     * @throws Exception
+     */
     protected function dealUploadFile(array $files, string $name): array {
         $array = [];
         foreach ($files as $key => $file) {

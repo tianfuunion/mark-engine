@@ -34,7 +34,7 @@ composer update tianfuunion/markengine
 
 ## 参与开发
 
-请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/markengine)。
+请参阅 [MarkEngine 核心框架包](https://github.com/tianfuunion/mark-engine)。
 
 ## 版权信息
 
@@ -48,4 +48,4 @@ All rights reserved。
 
 MarkEngine® 商标和著作权所有者为南阳市天府网络科技有限公司。
 
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+更多细节参阅 [LICENSE.txt](https://github.com/tianfuunion/mark-engine/LICENSE.txt)

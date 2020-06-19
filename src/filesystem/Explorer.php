@@ -1410,7 +1410,7 @@ class Explorer {
      * @return boolean
      * @todo Str::chang_code Unknown
      */
-    public function change_file_code($path, $input_code, $out_code) {
+    public function change_file_code($path, $input_code, $out_code, $exts) {
         //检查文件是否存在,如果存在就执行转码,返回真
         if (is_file($path)) {
             $content = file_get_contents($path);
