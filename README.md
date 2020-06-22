@@ -1,6 +1,12 @@
 Mark Engine 1.0
 ===============
 
+[![Latest Stable Version](https://poser.pugx.org/tianfuunion/mark-auth/v/stable)](https://packagist.org/packages/tianfuunion/mark-auth)
+[![Build Status](https://travis-ci.org/tianfuunion/mark-auth.svg?branch=master)](https://travis-ci.org/tianfuunion/mark-auth)
+[![Coverage Status](https://coveralls.io/repos/github/tianfuunion/mark-auth/badge.svg?branch=master)](https://coveralls.io/github/aliyun/mark-auth?branch=master)
+  
+==
+
 > 运行环境要求PHP7.1+。
 
 ## 主要新特性
@@ -19,7 +25,13 @@ Mark Engine 1.0
 
 ## 安装
 ~~~
-composer require tianfuunion/mark-engine 1.0.*-dev
+composer require tianfuunion/mark-engine 1.0
+~~~
+或者在你的`composer.json`中声明对 Mark Engine SDK For PHP 的依赖：
+~~~
+"require": {
+    "tianfuunion/mark-engine": "~1.0.*"
+}
 ~~~
 
 ## 文档
