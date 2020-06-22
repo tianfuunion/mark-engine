@@ -3,7 +3,6 @@ Mark Engine 1.0
 [![Latest Stable Version](https://poser.pugx.org/tianfuunion/mark-auth/v/stable)](https://packagist.org/packages/tianfuunion/mark-auth)
 [![Build Status](https://travis-ci.org/tianfuunion/mark-auth.svg?branch=master)](https://travis-ci.org/tianfuunion/mark-auth)
 [![Coverage Status](https://coveralls.io/repos/github/tianfuunion/mark-auth/badge.svg?branch=master)](https://coveralls.io/github/aliyun/mark-auth?branch=master)
-  
 
 > 运行环境要求PHP7.1+。
 
