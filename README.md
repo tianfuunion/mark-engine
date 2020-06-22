@@ -25,7 +25,7 @@ Mark Engine 1.0
 
 ## 安装
 ~~~
-composer require tianfuunion/mark-engine 1.0
+composer require tianfuunion/mark-engine
 ~~~
 或者在你的`composer.json`中声明对 Mark Engine SDK For PHP 的依赖：
 ~~~
