@@ -8,7 +8,7 @@ use finfo;
 use Exception;
 
 /**
- * @MarkEngine Curl 封装类
+ * Curl 封装类
  * @author     Mark<mark@tianfu.ink>
  * @site http://www.tianfuunion.cn
  * @time       2019年10月11日 15:27:00

@@ -29,8 +29,8 @@ use mark\filesystem\Explorer;
  **
  * 注意：方法中的文件路径有待测试
  *
- * @Version 1.0
- * @Time    2019-06-12 17:16:00
+ * @version 1.0
+ * @time    2019-06-12 17:16:00
  * @TODO    ：1、资源的输出，echo 改为 return后图片不显示 \n ：2、mysql title为中文后，name查询到的结果不显示后缀
  **==============================
  * Class ImageProcessor
