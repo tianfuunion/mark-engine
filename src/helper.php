@@ -963,7 +963,7 @@ if (!function_exists('script')) {
             preg_match("/^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/", $host, $matches);
             if ($matches) return $matches[1];
         } else {
-            preg_match("/(.*?)([^\.]+\.[^\.]+)$/", $host, $matches);
+            preg_match("/(.*?)([^.]+\.[^.]+)$/", $host, $matches);
             if ($matches) return $matches[2];
         }
 
