@@ -165,7 +165,7 @@
         }
     }
     /**
-     * @TODO: 判断是否为POST
+     * 判断是否为POST方法请求
      */
     if (!function_exists('is_post')) {
         function is_post()
@@ -176,7 +176,7 @@
     }
 
     /**
-     * @TODO: 判断是否为GET
+     * 判断是否为GET方法请求
      */
     if (!function_exists('is_get')) {
         function is_get()
@@ -186,7 +186,7 @@
     }
 
     /**
-     * @todo: 判断是否为AJAX
+     * 判断是否为AJAX方法请求
      */
     if (!function_exists('is_ajax')) {
         function is_ajax()
@@ -197,7 +197,7 @@
     }
 
     /**
-     * @todo: 判断是否为命令行模式
+     * 判断是否为命令行模式方法请求
      */
     if (!function_exists('is_cli')) {
         function is_cli()
@@ -280,7 +280,6 @@
                     $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
                 }
             }
-
             return $headers;
         }
     }
