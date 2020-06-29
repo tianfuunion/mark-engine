@@ -28,7 +28,7 @@
   },
   "autoload": {
     "psr-4": {
-      "mark\\": "src/"
+      "mark\\": "src"
     },
     "psr-0": {
       "": ""
