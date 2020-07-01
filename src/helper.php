@@ -4,12 +4,12 @@
 
     use mark\filesystem\Explorer;
 
-    /**
-     * 输出各种类型的数据，调试程序时打印数据使用。
-     *
-     * @param mixed    参数：可以是一个或多个任意变量或值
-     */
     if (!function_exists('p')) {
+        /**
+         * 输出各种类型的数据，调试程序时打印数据使用。
+         *
+         * @param mixed    参数：可以是一个或多个任意变量或值
+         */
         function p()
         {
             $args = func_get_args();  //获取多个参数
@@ -33,40 +33,50 @@
         }
     }
 
-    /**
-     * 检测变量是否为空，
-     * 为空则返回true, 反之则返回false
-     *
-     * 待完成
-     *
-     * 使用 PHP 函数对变量 $x 进行比较
-     * https://www.cnblogs.com/jasonxu19900827/p/6637913.html
-     *
-     * 表达式         gettype()    empty()    is_null()    isset()    boolean : if($x)
-     * $x = "";         string        TRUE    false    TRUE    false
-     * $x = null;     NULL        TRUE    TRUE    false    false
-     * var $x;         NULL        TRUE    TRUE    false    false
-     * $x is undefined    NULL    TRUE    TRUE    false    false
-     * $x = array(); array        TRUE    false    TRUE    false
-     * $x = false;     boolean    TRUE    false    TRUE    false
-     * $x = true;     boolean    false    false    TRUE    TRUE
-     * $x = 1;         integer    false    false    TRUE    TRUE
-     * $x = 42;         integer    false    false    TRUE    TRUE
-     * $x = 0;         integer    TRUE    false    TRUE    false
-     * $x = -1;         integer    false    false    TRUE    TRUE
-     * $x = "1";     string        false    false    TRUE    TRUE
-     * $x = "0";     string        TRUE    false    TRUE    false
-     * $x = "-1";     string        false    false    TRUE    TRUE
-     * $x = "php";     string        false    false    TRUE    TRUE
-     * $x = "true";     string        false    false    TRUE    TRUE
-     * $x = "false"; string        false    false    TRUE    TRUE
-     *
-     * @param null $variable
-     *
-     * @return bool|null
-     */
     if (!function_exists('isEmpty')) {
+        /**
+         * 检测变量是否为空
+         *
+         * @param null $variable
+         * @return bool
+         * @deprecated
+         */
         function isEmpty($variable = null)
+        {
+            return is_empty($variable) ? true : false;
+        }
+    }
+
+    if (!function_exists('is_empty')) {
+        /**
+         * 判断php变量是否定义，是否为空,为空则返回true, 反之则返回false
+         *
+         * @link https://www.cnblogs.com/jasonxu19900827/p/6637913.html
+         *
+         * @source
+         * 表达式         gettype()    empty()    is_null()    isset()    boolean : if($x)
+         * $x = "";         string        TRUE    false    TRUE    false\n
+         * $x = null;     NULL        TRUE    TRUE    false    false
+         * var $x;         NULL        TRUE    TRUE    false    false
+         * $x is undefined    NULL    TRUE    TRUE    false    false
+         * $x = array(); array        TRUE    false    TRUE    false
+         * $x = false;     boolean    TRUE    false    TRUE    false
+         * $x = true;     boolean    false    false    TRUE    TRUE
+         * $x = 1;         integer    false    false    TRUE    TRUE
+         * $x = 42;         integer    false    false    TRUE    TRUE
+         * $x = 0;         integer    TRUE    false    TRUE    false
+         * $x = -1;         integer    false    false    TRUE    TRUE
+         * $x = "1";     string        false    false    TRUE    TRUE
+         * $x = "0";     string        TRUE    false    TRUE    false
+         * $x = "-1";     string        false    false    TRUE    TRUE
+         * $x = "php";     string        false    false    TRUE    TRUE
+         * $x = "true";     string        false    false    TRUE    TRUE
+         * $x = "false"; string        false    false    TRUE    TRUE
+         *
+         * @param null $variable
+         * @return bool
+         */
+        function is_empty($variable = null)
         {
             if (
                 $variable == null
@@ -95,15 +105,16 @@
             }
         }
     }
-    /**
-     * 文件尺寸转换，将大小将字节转为各种单位大小
-     *
-     * @param int $bytes 字节大小
-     *
-     * @return    string    转换后带单位的大小
-     * @link Explorer::toSize()
-     */
+
     if (!function_exists('toSize')) {
+        /**
+         * 文件尺寸转换，将大小将字节转为各种单位大小
+         *
+         * @param int $bytes 字节大小
+         *
+         * @return    string    转换后带单位的大小
+         * @link Explorer::toSize()
+         */
         function toSize($bytes)
         {
             if ($bytes >= (2 ** 40)) { //如果提供的字节数大于等于2的40次方，则条件成立
@@ -137,10 +148,13 @@
             return $return . ' ' . $suffix;
         }
     }
-    /**
-     * 获取当前访问请求域名
-     */
+
     if (!function_exists('getRequestHost')) {
+        /**
+         * 获取当前访问请求域名
+         *
+         * @return string
+         */
         function getRequestHost()
         {
             return ((!empty($_SERVER['HTTPS']) &&
@@ -148,26 +162,36 @@
                 $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
         }
     }
-    /**
-     * 获取当前访问请求Url，带参数
-     */
+
     if (!function_exists('getRequestUrl')) {
+        /**
+         * 获取当前访问请求Url，带参数
+         *
+         * @return false|string
+         */
         function getRequestUrl()
         {
             /** 可获取调用页面的URL*/
             return utf8_encode($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['REQUEST_URI']);
         }
     }
+
     if (!function_exists('getRequestMethod')) {
+        /**
+         * 获取请求方法
+         * @return bool|string
+         */
         function getRequestMethod()
         {
             return isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : false;
         }
     }
-    /**
-     * 判断是否为POST方法请求
-     */
+
     if (!function_exists('is_post')) {
+        /**
+         * 判断是否为POST方法请求
+         * @return bool
+         */
         function is_post()
         {
             return isset($_SERVER['REQUEST_METHOD']) &&
@@ -175,20 +199,22 @@
         }
     }
 
-    /**
-     * 判断是否为GET方法请求
-     */
     if (!function_exists('is_get')) {
+        /**
+         * 判断是否为GET方法请求
+         * @return bool
+         */
         function is_get()
         {
             return isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'GET';
         }
     }
 
-    /**
-     * 判断是否为AJAX方法请求
-     */
     if (!function_exists('is_ajax')) {
+        /**
+         * 判断是否为AJAX方法请求
+         * @return bool
+         */
         function is_ajax()
         {
             return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
@@ -196,26 +222,27 @@
         }
     }
 
-    /**
-     * 判断是否为命令行模式方法请求
-     */
     if (!function_exists('is_cli')) {
+        /**
+         * 判断是否为命令行模式方法请求
+         * @return bool
+         */
         function is_cli()
         {
             return (PHP_SAPI === 'cli' or defined('STDIN'));
         }
     }
-    /**
-     * 下面来看PHP Unicode编码方法，将中文转为Unicode字符，例如将新浪微博转换为unicode字符串，代码如下
-     * $str = "新浪微博";
-     * echo UnicodeEncode($str);
-     * Unicode编码输出字符串：“\u65b0\u6d6a\u5fae\u535a”
-     *
-     * @param $str
-     *
-     * @return string
-     */
+
     if (!function_exists('UnicodeEncode')) {
+        /**
+         * 下面来看PHP Unicode编码方法，将中文转为Unicode字符，例如将新浪微博转换为unicode字符串，代码如下
+         * $str = "新浪微博";
+         * echo UnicodeEncode($str);
+         * Unicode编码输出字符串：“\u65b0\u6d6a\u5fae\u535a”
+         *
+         * @param $str
+         * @return string
+         */
         function UnicodeEncode($str)
         {
             // split word
@@ -229,17 +256,17 @@
             return $unicodeStr;
         }
     }
-    /**
-     * 2：unicode解码方法，将上面的unicode字符转换成中文，代码如下：
-     * $unicode_str = "\u65b0\u6d6a\u5fae\u535a";
-     * echo unicodeDecode($unicode_str);
-     * Unicode解码结果：“新浪微博”
-     *
-     * @param $unicode_str
-     *
-     * @return string
-     */
+
     if (!function_exists('unicodeDecode')) {
+        /**
+         * 2：unicode解码方法，将上面的unicode字符转换成中文，代码如下：
+         * $unicode_str = "\u65b0\u6d6a\u5fae\u535a";
+         * echo unicodeDecode($unicode_str);
+         * Unicode解码结果：“新浪微博”
+         *
+         * @param $unicode_str
+         * @return mixed|string
+         */
         function unicodeDecode($unicode_str)
         {
             $json = '{"str":"' . $unicode_str . '"}';
@@ -251,12 +278,14 @@
             return $arr['str'];
         }
     }
-    /**
-     * 压缩html
-     * @param $html
-     * @return string
-     */
+
     if (!function_exists('compress_html')) {
+        /**
+         * 压缩html
+         *
+         * @param $html
+         * @return string
+         */
         function compress_html($html)
         {
             $html = preg_replace(":\s+//.*?\n:", '', $html);
@@ -268,10 +297,13 @@
             return trim($html);
         }
     }
-    /**
-     * 这个函数只能在apache环境下使用，iis或者nginx并不支持，可以通过自定义函数来实现。
-     */
+
     if (!function_exists('getallheaders')) {
+        /**
+         * 这个函数只能在apache环境下使用，iis或者nginx并不支持，可以通过自定义函数来实现。
+         *
+         * @return array
+         */
         function getallheaders()
         {
             $headers = array();
@@ -283,13 +315,14 @@
             return $headers;
         }
     }
-    /**
-     * @param $style
-     * @param string $type
-     * @param null $path
-     * @param string $version
-     */
+
     if (!function_exists('style')) {
+        /**
+         * @param $style
+         * @param string $type
+         * @param null $path
+         * @param string $version
+         */
         function style($style, $type = 'private', $path = null, $version = "1.0")
         {
             if ($style != '') {
@@ -331,19 +364,20 @@
             }
         }
     }
-    /**
-     * opensource   开源库
-     * private      私有库：第1方库
-     * project      项目库：第2方库
-     * protected    模块库：第2方库
-     * public       公共库：第3方库
-     *
-     * @param string $script
-     * @param string $type [public|project|protected|private]
-     * @param string $path
-     * @param string $version
-     */
+
     if (!function_exists('script')) {
+        /**
+         * opensource   开源库
+         * private      私有库：第1方库
+         * project      项目库：第2方库
+         * protected    模块库：第2方库
+         * public       公共库：第3方库
+         *
+         * @param string $script
+         * @param string $type [public|project|protected|private]
+         * @param string $path
+         * @param string $version
+         */
         function script($script = '', $type = 'private', $path = '', $version = "1.0")
         {
             if ($script != '') {
@@ -389,14 +423,14 @@
             }
         }
     }
-    /**
-     * 替换单引号和双引号
-     *
-     * @param $str
-     *
-     * @return string
-     */
+
     if (!function_exists('toQuote')) {
+        /**
+         * 替换单引号和双引号
+         *
+         * @param $str
+         * @return string
+         */
         function toQuote($str)
         {
             $str = str_replace(array("'", '"'), array('&#39;', '&#34;'), $str);
@@ -404,12 +438,13 @@
             return trim($str);
         }
     }
-    /**
-     * @param $str
-     *
-     * @return string
-     */
+
     if (!function_exists('deQuote')) {
+        /**
+         * @param $str
+         *
+         * @return string
+         */
         function deQuote($str)
         {
             $str = str_replace(array('&#39;', '&#34;'), array("'", '"'), $str);
@@ -417,17 +452,18 @@
             return trim($str);
         }
     }
-    /**
-     * 常规字符串条件替换
-     *
-     * @param $mode
-     * @param $str
-     * @param $from
-     * @param $to
-     *
-     * @return string
-     */
+
     if (!function_exists('replaceStr')) {
+        /**
+         * 常规字符串条件替换
+         *
+         * @param $mode
+         * @param $str
+         * @param $from
+         * @param $to
+         *
+         * @return string
+         */
         function replaceStr($mode, $str, $from, $to)
         {
             switch ($mode) {
@@ -443,15 +479,16 @@
             return $return;
         }
     }
-    /**
-     * 文件地址处理
-     *
-     * @param $str
-     * @param $mode
-     *
-     * @return mixed|string
-     */
+
     if (!function_exists('getFileInfo')) {
+        /**
+         * 文件地址处理
+         *
+         * @param $str
+         * @param $mode
+         *
+         * @return mixed|string
+         */
         function getFileInfo($str, $mode)
         {
             if ($str == '' || $str === null) {
@@ -476,17 +513,18 @@
             }
         }
     }
-    /**
-     * 字符截断，支持中英文不乱码
-     *
-     * @param        $str
-     * @param int $len
-     * @param string $dot
-     * @param string $encoding
-     *
-     * @return mixed|string
-     */
+
     if (!function_exists('cutstr')) {
+        /**
+         * 字符截断，支持中英文不乱码
+         *
+         * @param        $str
+         * @param int $len
+         * @param string $dot
+         * @param string $encoding
+         *
+         * @return mixed|string
+         */
         function cutstr($str, $len = 0, $dot = '...', $encoding = 'utf-8')
         {
             if (!is_numeric($len)) {
@@ -547,21 +585,21 @@
         }
     }
 
-    /**
-     * 字符截断，支持html补全
-     *
-     * @param        $str
-     * @param int $length
-     * @param string $suffixStr
-     * @param bool $clearhtml
-     * @param string $charset
-     * @param int $start
-     * @param string $tags
-     * @param float $zhfw
-     *
-     * @return mixed|string
-     */
     if (!function_exists('cuthtml')) {
+        /**
+         * 字符截断，支持html补全
+         *
+         * @param        $str
+         * @param int $length
+         * @param string $suffixStr
+         * @param bool $clearhtml
+         * @param string $charset
+         * @param int $start
+         * @param string $tags
+         * @param float $zhfw
+         *
+         * @return mixed|string
+         */
         function cuthtml(
             $str, $length = 0, $suffixStr = '...', $clearhtml = true, $charset = 'utf-8', $start = 0,
             $tags = 'P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|TABLE|TR|TD|TH|INPUT|SELECT|TEXTAREA|OBJECT|A|UL|OL|LI|BASE|META|LINK|HR|BR|PARAM|IMG|AREA|INPUT|SPAN',
@@ -634,16 +672,16 @@
         }
     }
 
-    /**
-     * 根据tinyint字段判断显示内容
-     *
-     * @param $val
-     * @param $str1
-     * @param $str2
-     *
-     * @return mixed
-     */
     if (!function_exists('showTinyintMsg')) {
+        /**
+         * 根据tinyint字段判断显示内容
+         *
+         * @param $val
+         * @param $str1
+         * @param $str2
+         *
+         * @return mixed
+         */
         function showTinyintMsg($val, $str1, $str2)
         {
             if ($val == 1) {
@@ -655,14 +693,15 @@
             return $out;
         }
     }
-    /**
-     *    使用特定function对数组中所有元素做处理
-     *
-     * @param array $array 要处理的字符串
-     * @param callable $function 要执行的函数
-     * @param bool $apply_to_keys_also 是否也应用到key上
-     */
+
     if (!function_exists('arrayRecursive')) {
+        /**
+         * 使用特定function对数组中所有元素做处理
+         *
+         * @param array $array 要处理的字符串
+         * @param callable $function 要执行的函数
+         * @param bool $apply_to_keys_also 是否也应用到key上
+         */
         function arrayRecursive(array &$array, callable $function, $apply_to_keys_also = false)
         {
             foreach ($array as $key => $value) {
@@ -682,16 +721,17 @@
             }
         }
     }
-    /**
-     * 下载文件至服务器
-     *
-     * @param $url
-     * @param $path
-     *
-     * @return array
-     * @deprecated
-     */
+
     if (!function_exists('downfile')) {
+        /**
+         * 下载文件至服务器
+         *
+         * @param $url
+         * @param $path
+         *
+         * @return array
+         * @deprecated
+         */
         function downfile($url, $path)
         {
             $arr = parse_url($url);
@@ -706,14 +746,15 @@
             return array('result' => $result, 'url' => $url, 'path' => $path, 'filename' => $fileName, 'suffix' => $suffix);
         }
     }
-    /**
-     * @param $url
-     * @param $path
-     *
-     * @return array
-     * @deprecated
-     */
+
     if (!function_exists('downfile2')) {
+        /**
+         * @param $url
+         * @param $path
+         *
+         * @return array
+         * @deprecated
+         */
         function downfile2($url, $path)
         {
             $curl = curl_init();//初始化一个cURL会话
@@ -736,17 +777,17 @@
         }
     }
 
-    /**
-     * CURL 下载文件(图片)
-     *
-     * @param        $url
-     * @param string $path
-     * @param string $filename
-     *
-     * @return array|bool
-     * @deprecated
-     */
     if (!function_exists('curlDownFile')) {
+        /**
+         * CURL 下载文件(图片)
+         *
+         * @param        $url
+         * @param string $path
+         * @param string $filename
+         *
+         * @return array|bool
+         * @deprecated
+         */
         function curlDownFile($url, $path = '', $filename = '')
         {
             if (trim($url) == '') {
@@ -776,15 +817,14 @@
             return array('bytes' => $bytes, 'url' => $url, 'path' => $path, 'filename' => $filename);
         }
     }
-    /**
-     * 合并CSS
-     *
-     * @param      $css
-     * @param null $savefile
-     *
-     * @return false|int|mixed|string
-     */
+
     if (!function_exists('merge_css')) {
+        /**
+         * 合并CSS
+         * @param $css
+         * @param null $savefile
+         * @return false|int|string
+         */
         function merge_css($css, $savefile = null)
         {
             if (is_array($css)) {
@@ -820,25 +860,45 @@
             return @file_put_contents($savefile, $css_content);
         }
     }
-    /**========== View Modifier ==========**/
 
-    /**
-     * 手机号格式化
-     * 参数1：手机号
-     * 参数2：开始位置，默认为3
-     * 参数3：结束位置，默认为6
-     * 参数4：间隔符号，默认为空格
-     * 输出：格式化后的手机号：133 3360 9123
-     * 默认：开始于3，间隔4个
-     *
-     * @param        $phone
-     * @param int $start
-     * @param int $end
-     * @param string $spacing
-     *
-     * @return string
-     */
+    if (!function_exists('uri_merge')) {
+
+        /**
+         * 合并URI，向URL中添加参数
+         * @param string $url
+         * @param string $key
+         * @param $value
+         * @return string
+         */
+        function uri_merge(string $url, string $key, $value)
+        {
+            $url = preg_replace('/(.*)(?|&)' . $key . '=[^&]+?(&)(.*)/i', '$1$2$4', $url . '&');
+            $url = substr($url, 0, -1);
+            if (strpos($url, '?') === false) {
+                return ($url . '?' . $key . '=' . $value);
+            } else {
+                return ($url . '&' . $key . '=' . $value);
+            }
+        }
+    }
+
+    /**========== View Modifier ==========**/
     if (!function_exists('phone_format')) {
+        /**
+         * 手机号格式化
+         * 参数1：手机号
+         * 参数2：开始位置，默认为3
+         * 参数3：结束位置，默认为6
+         * 参数4：间隔符号，默认为空格
+         * 输出：格式化后的手机号：133 3360 9123
+         * 默认：开始于3，间隔4个
+         *
+         * @param $phone
+         * @param int $start
+         * @param int $end
+         * @param string $spacing
+         * @return string
+         */
         function phone_format($phone, $start = 3, $end = 4, $spacing = ' ')
         {
             if ($start == 0) {
@@ -855,17 +915,14 @@
             return $phone;
         }
     }
-    /**
-     * 字符串加密
-     *
-     * @param string $string 字符串，例手机号（默认参数）
-     * @param string $separator 字符数组，加密的起始位置，加密字符（附加参数）
-     * @param int $limit
-     *
-     * @return array|string
-     *
-     */
+
     if (!function_exists('string_explode')) {
+        /**
+         * @param string $string
+         * @param string $separator
+         * @param int $limit
+         * @return false|string|string[]
+         */
         function string_explode(string $string, $separator = ',', $limit = 0)
         {
             if (empty($string) && $string === '') {
@@ -876,17 +933,17 @@
         }
     }
 
-    /**
-     * 字符串加密
-     *
-     * @param string $string 字符串，例手机号（默认参数）
-     * @param string $params 字符数组，加密的起始位置，加密字符（附加参数）
-     *
-     * @return string
-     * @example <{$phone|string_encrypt:"3,7,×"}>
-     * @todo    :暂时只能加密已知长度，随后加入根据长度自动计算
-     */
     if (!function_exists('string_encrypt')) {
+        /**
+         * 字符串加密
+         *
+         * @param string $string 字符串，例手机号（默认参数）
+         * @param string $params 字符数组，加密的起始位置，加密字符（附加参数）
+         *
+         * @return string
+         * @example <{$phone|string_encrypt:"3,7,×"}>
+         * @todo    :暂时只能加密已知长度，随后加入根据长度自动计算
+         */
         function string_encrypt(string $string, $params = '')
         {
             if (empty($string) && $string === '') {
@@ -909,15 +966,15 @@
         }
     }
 
-    /**
-     * 统计数组中某一列的和
-     *
-     * @param array $array
-     * @param string $field
-     *
-     * @return float|int
-     */
     if (!function_exists('array_total')) {
+        /**
+         * 统计数组中某一列的和
+         *
+         * @param array $array
+         * @param string $field
+         *
+         * @return float|int
+         */
         function array_total(array $array, string $field)
         {
             if (is_array($array) && count($array) > 0 && !empty($field)) {
@@ -928,18 +985,18 @@
         }
     }
 
-    /**
-     * 自动生成版本号
-     *
-     * @param $file
-     * @return string
-     * @deprecated
-     */
     if (!function_exists('auto_version')) {
+        /**
+         * 自动生成版本号
+         *
+         * @param $file
+         * @return string
+         * @deprecated
+         */
         function auto_version($file)
         {
-            if (file_exists($_SERVER['DOCUMENT_ROOT'] . $file)) {
-                $ver = filemtime($_SERVER['DOCUMENT_ROOT'] . $file);
+            if (file_exists($file)) {
+                $ver = filemtime($file);
             } else {
                 $ver = time();
             }
@@ -948,19 +1005,19 @@
 
         }
     }
-    /**
-     * 截取字符串到指定长度，默认长度是80. 第二个参数可选，指定了截取后代替显示的字符。 截取后的字符长度是截取规定的长度加上第二个参数的字符长度。 默认truncate会尝试按单词进行截取。 如果你希望按字符截取（单词可能会被截断），需要设置第三个参数true。
-     *
-     * @param string $string
-     * @param int $length
-     * @param string $etc
-     * @param bool $break_words
-     * @param bool $middle
-     * @param string $charset
-     *
-     * @return string|string[]|null
-     */
+
     if (!function_exists('truncate')) {
+        /**
+         * 截取字符串到指定长度，默认长度是80. 第二个参数可选，指定了截取后代替显示的字符。 截取后的字符长度是截取规定的长度加上第二个参数的字符长度。 默认truncate会尝试按单词进行截取。 如果你希望按字符截取（单词可能会被截断），需要设置第三个参数true。
+         *
+         * @param string $string
+         * @param int $length
+         * @param string $etc
+         * @param bool $break_words
+         * @param bool $middle
+         * @param string $charset
+         * @return string
+         */
         function truncate(string $string, $length = 80, $etc = '...', $break_words = false, $middle = false, $charset = 'UTF-8')
         {
             if ($length == 0) {
@@ -1000,14 +1057,14 @@
             return $string;
         }
     }
-    /**
-     * 解析Host
-     *
-     * @param $url
-     *
-     * @return mixed|string
-     */
+
     if (!function_exists('parse_host')) {
+        /**
+         * 解析Host
+         *
+         * @param string $url
+         * @return mixed|string
+         */
         function parse_host(string $url)
         {
             if (!is_string($url) || $url == '') return "";
@@ -1021,14 +1078,14 @@
 
         }
     }
-    /**
-     * 解析Domain
-     *
-     * @param string $url
-     *
-     * @return mixed|string
-     */
+
     if (!function_exists('parse_domain')) {
+        /**
+         * 解析Domain
+         *
+         * @param string $url
+         * @return mixed|string
+         */
         function parse_domain(string $url)
         {
             $host = parse_host($url);
