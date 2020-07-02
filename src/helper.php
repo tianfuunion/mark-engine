@@ -942,7 +942,7 @@
          *
          * @return string
          * @example <{$phone|string_encrypt:"3,7,×"}>
-         * @todo    :暂时只能加密已知长度，随后加入根据长度自动计算
+         * @TODO    :暂时只能加密已知长度，随后加入根据长度自动计算
          */
         function string_encrypt(string $string, $params = '')
         {

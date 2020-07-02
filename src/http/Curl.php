@@ -731,7 +731,6 @@ class Curl {
                     // }
                 }
 
-
                 if (!empty($this->formData)) {
                     // curl_setopt($this->curl, CURLOPT_POSTFIELDS, $this->formData);
                     curl_setopt($this->curl, CURLOPT_POSTFIELDS, http_build_query($this->formData));
