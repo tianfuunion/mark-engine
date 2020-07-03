@@ -1,13 +1,4 @@
 <?php
-// +----------------------------------------------------------------------
-// | ThinkPHP [ WE CAN DO IT JUST THINK ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2006~2019 http://thinkphp.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
-// +----------------------------------------------------------------------
-// | Author: liu21st <liu21st@gmail.com>
-// +----------------------------------------------------------------------
     declare (strict_types=1);
 
     namespace mark\request;
@@ -89,8 +80,7 @@
          *
          * @var array
          */
-        protected $proxyServerIpHeader = ['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP',
-            'HTTP_X_CLUSTER_CLIENT_IP'];
+        protected $proxyServerIpHeader = ['HTTP_X_REAL_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'HTTP_X_CLIENT_IP', 'HTTP_X_CLUSTER_CLIENT_IP'];
 
         /**
          * 请求类型
@@ -2018,6 +2008,18 @@
         public function query(): string
         {
             return $this->server('QUERY_STRING', '');
+        }
+
+        /**
+         * 当前请求URL地址中在散列符号 # 之后的参数
+         *
+         * @access public
+         * @param string $url
+         * @return false|string|null
+         */
+        public static function fragment(string $url)
+        {
+            return parse_url($url ?? self::url(true), PHP_URL_FRAGMENT);
         }
 
         /**
