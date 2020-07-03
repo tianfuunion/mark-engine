@@ -2017,9 +2017,9 @@
          * @param string $url
          * @return false|string|null
          */
-        public static function fragment(string $url)
+        public static function fragment(string $url = '')
         {
-            return parse_url($url ?? self::url(true), PHP_URL_FRAGMENT);
+            return parse_url(!empty($url) ?? self::url(true), PHP_URL_FRAGMENT);
         }
 
         /**
