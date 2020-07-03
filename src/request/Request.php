@@ -2019,7 +2019,8 @@
          */
         public static function fragment(string $url = '')
         {
-            return parse_url(!empty($url) ? $url : strval(self::url(true)), PHP_URL_FRAGMENT);
+            // return strtolower(parse_url(!empty($url) ? $url : strval(self::url(true)), PHP_URL_FRAGMENT));
+            return strtolower(parse_url(!empty($url) ? $url : strval(Request::url(true)), PHP_URL_FRAGMENT));
         }
 
         /**
