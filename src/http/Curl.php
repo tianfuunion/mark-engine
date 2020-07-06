@@ -446,6 +446,11 @@
             return $this;
         }
 
+        /**
+         * Curl 请求结果以Json的形式输出
+         *
+         * @return string
+         */
         public function toJson()
         {
             $json = $this->execute();
@@ -467,7 +472,7 @@
         /**
          * Curl 请求结果以数组的形式输出
          *
-         * @return array|bool|false|mixed|string
+         * @return array
          */
         public function toArray()
         {
