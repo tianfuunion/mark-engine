@@ -956,12 +956,13 @@
          */
         public function getCurl()
         {
-            if (!empty($this->url)) {
-                $this->curl = curl_init($this->url) or die('Curl初始化失败');
-            } else {
-                $this->curl = curl_init() or die('Curl初始化失败');
+            if (empty($this->curl)) {
+                if (!empty($this->url)) {
+                    $this->curl = curl_init($this->url) or die('Curl初始化失败');
+                } else {
+                    $this->curl = curl_init() or die('Curl初始化失败');
+                }
             }
-
             return $this->curl;
         }
 
