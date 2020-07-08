@@ -222,6 +222,35 @@
         }
     }
 
+    if (!function_exists('is_pjax')) {
+        /**
+         * 当前是否Pjax请求
+         * @access public
+         * @param bool $pjax true 获取原始pjax请求
+         * @return bool
+         */
+        function is_pjax(bool $pjax = false): bool
+        {
+            $result = !empty($_SERVER['HTTP_X_PJAX']) ? true : false;
+
+            if (true === $pjax) {
+                return $result;
+            }
+
+            return $result;
+        }
+    }
+    if (!function_exists('is_json')) {
+        /**
+         * 当前是否JSON请求
+         * @access public
+         * @return bool
+         */
+        function is_json(): bool
+        {
+            return false !== strpos($_SERVER['HTTP_ACCEPT'], 'json');
+        }
+    }
     if (!function_exists('is_cli')) {
         /**
          * 判断是否为命令行模式方法请求
