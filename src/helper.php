@@ -117,7 +117,7 @@
          */
         function toSize($bytes)
         {
-            if ($bytes >= (2 ** 40)) { //如果提供的字节数大于等于2的40次方，则条件成立
+            if ($bytes >= (2 ** 40)) { // 如果提供的字节数大于等于2的40次方，则条件成立
                 //将字节大小转换为同等的T大小
                 $return = round($bytes / (1024 ** 4), 2);
                 //单位为TB
@@ -127,17 +127,17 @@
                 $return = round($bytes / (1024 ** 3), 2);
                 //单位为GB
                 $suffix = 'GB';
-            } elseif ($bytes >= (2 ** 20)) {                    //如果提供的字节数大于等于2的20次方，则条件成立
+            } elseif ($bytes >= (2 ** 20)) { // 如果提供的字节数大于等于2的20次方，则条件成立
                 //将字节大小转换为同等的M大小
                 $return = round($bytes / (1024 ** 2), 2);
                 //单位为MB
                 $suffix = 'MB';
-            } elseif ($bytes >= (2 ** 10)) {                    //如果提供的字节数大于等于2的10次方，则条件成立
+            } elseif ($bytes >= (2 ** 10)) { // 如果提供的字节数大于等于2的10次方，则条件成立
                 $return = round($bytes / (1024 ** 1), 2);
                 //将字节大小转换为同等的K大小
                 $suffix = 'KB';
                 //单位为KB
-            } else {                                            //否则提供的字节数小于2的10次方，则条件成立
+            } else { // 否则提供的字节数小于2的10次方，则条件成立
                 //字节大小单位不变
                 $return = $bytes;
                 //单位为Byte
@@ -157,9 +157,7 @@
          */
         function getRequestHost()
         {
-            return ((!empty($_SERVER['HTTPS']) &&
-                    $_SERVER['HTTPS'] !== 'off') ||
-                $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
+            return ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'];
         }
     }
 
@@ -194,8 +192,7 @@
          */
         function is_post()
         {
-            return isset($_SERVER['REQUEST_METHOD']) &&
-                strtoupper($_SERVER['REQUEST_METHOD']) === 'POST';
+            return isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'POST';
         }
     }
 
@@ -217,8 +214,7 @@
          */
         function is_ajax()
         {
-            return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-                strtoupper($_SERVER['HTTP_X_REQUESTED_WITH']) === 'XMLHTTPREQUEST';
+            return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtoupper($_SERVER['HTTP_X_REQUESTED_WITH']) === 'XMLHTTPREQUEST';
         }
     }
 
@@ -358,23 +354,18 @@
                 switch ($type) {
                     case 'opensource':
                     case 'open': // 开源的，或来自网络的
-                        $css = array('style' => $style, 'asset' => $path . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type,
-                            "version" => $version);
+                        $css = array('style' => $style, 'asset' => $path . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type, "version" => $version);
                         break;
                     case 'public':
-                        $css = array('style' => $style, 'asset' => DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR . $style . '.css',
-                            'type' => $type, "version" => $version);
+                        $css = array('style' => $style, 'asset' => DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type, "version" => $version);
                         break;
                     case 'protected':
                     case 'project':
-                        $css = array('style' => $style,
-                            'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR . $style . '.css',
-                            'type' => $type, "version" => $version);
+                        $css = array('style' => $style, 'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'style' . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type, "version" => $version);
                         break;
                     case 'private':
                     default:
-                        $css = array('style' => $style, 'asset' => 'style' . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type,
-                            "version" => $version);
+                        $css = array('style' => $style, 'asset' => 'style' . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type, "version" => $version);
                         break;
                 }
 
@@ -413,27 +404,20 @@
                 switch ($type) {
                     case 'opensource':
                     case 'open': // 开源的，或来自网络的
-                        $js = array('script' => $script, 'asset' => $path . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type,
-                            "version" => $version);
+                        $js = array('script' => $script, 'asset' => $path . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
                     case 'public': // 公共库
-                        $js = array('script' => $script, 'asset' => DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR . $script . '.js',
-                            'type' => $type, "version" => $version);
+                        $js = array('script' => $script, 'asset' => DIRECTORY_SEPARATOR . 'asset' . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
                     case 'project': // 当前项目库
-                        $js = array('script' => $script,
-                            'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'script' . DIRECTORY_SEPARATOR . $script . '.js',
-                            'type' => $type, "version" => $version);
+                        $js = array('script' => $script, 'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'script' . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
                     case 'protected': // 当前模块库
-                        $js = array('script' => $script,
-                            'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'script' . DIRECTORY_SEPARATOR . $script . '.js',
-                            'type' => $type, "version" => $version);
+                        $js = array('script' => $script, 'asset' => DIRECTORY_SEPARATOR . 'library' . DIRECTORY_SEPARATOR . 'script' . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
                     case 'private': // 当前动作库
                     default:
-                        $js = array('script' => $script, 'asset' => 'script' . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type,
-                            "version" => $version);
+                        $js = array('script' => $script, 'asset' => 'script' . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
                 }
 
@@ -1037,7 +1021,8 @@
 
     if (!function_exists('truncate')) {
         /**
-         * 截取字符串到指定长度，默认长度是80. 第二个参数可选，指定了截取后代替显示的字符。 截取后的字符长度是截取规定的长度加上第二个参数的字符长度。 默认truncate会尝试按单词进行截取。 如果你希望按字符截取（单词可能会被截断），需要设置第三个参数true。
+         * 截取字符串到指定长度，默认长度是80. 第二个参数可选，指定了截取后代替显示的字符。 截取后的字符长度是截取规定的长度加上第二个参数的字符长度。
+         * 默认truncate会尝试按单词进行截取。 如果你希望按字符截取（单词可能会被截断），需要设置第三个参数true。
          *
          * @param string $string
          * @param int $length
