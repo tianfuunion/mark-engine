@@ -512,18 +512,22 @@
                     return dirname($str);
                     break;
                 case 'name' :
-                    return basename($str, '.' . end(explode('.', $str)));
+                    $args = explode('.', $str);
+                    if (!empty($args) && $args !== false) {
+                        return basename($str, '.' . end($args));
+                    }
                     break;
                 case 'ext' :
-                    return end(explode('.', $str));
+                    $args = explode('.', $str);
+                    if (!empty($args) && $args !== false) {
+                        return end($argv);
+                    }
                     break;
                 case 'simg' :
                     return getFileInfo($str, 'path') . '/s_' . getFileInfo($str, 'name') . '.jpg';
                     break;
-                default:
-                    return $str;
-                    break;
             }
+            return $str;
         }
     }
 
