@@ -72,7 +72,7 @@
 
         // 响应头
         private $responseHeaderSize = 0;
-        private $responseHeaderContent;
+        private $responseHeaderContent = '';
         // 响应码
         private $responseCode;
 
@@ -910,7 +910,9 @@
         }
 
         /**
-         * 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应码
+         * 请求的响应码
+         *
+         * @note 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应码
          *
          * @return mixed
          */
@@ -920,12 +922,22 @@
         }
 
         /**
-         * 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应头
+         * 获取请求响应头
          *
-         * @return mixed
+         * @note 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应头
+         *
+         * @param bool $complete
+         * @return string|string[]
          */
-        public function getResponseHeader()
+        public function getResponseHeader(bool $complete = false)
         {
+            if (!empty($this->responseHeaderContent) && $complete) {
+                $header = explode("\r\n", $this->responseHeaderContent);
+                if ($header !== false) {
+                    return $header;
+                }
+            }
+
             return $this->responseHeaderContent;
         }
 
