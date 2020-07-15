@@ -7,8 +7,8 @@
 
     use think\facade\Request;
     use think\facade\Config;
-    use think\facade\View;
     use think\facade\Db;
+    use think\facade\View;
 
     /**
      * Class Responsive Response
@@ -17,21 +17,20 @@
      */
     class Responsive extends Response
     {
-
         /**
          * 自适应响应输出
          *
          * @since   http://tools.jb51.net/table/http_status_code
          * @version HTTP Status Code 2.0
          *
-         * @param mixed $data
-         * @param int $code
-         * @param string $status
-         * @param string $msg
+         * @param mixed $data 响应数据
+         * @param int $code 响应码
+         * @param string $status 响应状态
+         * @param string $msg 响应描述
          *
-         * @param string $type
+         * @param string $type 自定义响应类别
          *
-         * @return \think\Response|\think\response\Json|\think\response\Jsonp|\think\response\View
+         * @return \think\Response|\think\response\Json|\think\response\Jsonp|\think\response\View/array
          */
         public static function display($data, $code = 200, $status = '', $msg = '', $type = 'html')
         {
@@ -276,29 +275,28 @@
 
             $response = array('data' => $data, 'code' => $code, 'status' => $status, 'msg' => $msg);
 
-            if (is_json() || $type === 'json') {
-                return json($response);
-            }
             if (is_pjax() || $type === 'pjax') {
                 return jsonp($response);
             }
 
-            if (is_ajax() || $type === 'ajax') {
+            if (is_json() || $type === 'json' || is_ajax() || $type === 'ajax') {
                 return json($response);
             }
 
-            if (Request::isPost() || $type === 'post') {
+            if (is_post() || $type === 'post') {
                 return response($response);
             }
-            if (Request::isGet() || $type === 'get') {
-                View::assign('response', $response);
 
-                $template = Config::get('app.exception_tpl', '');
-                if (!empty($template) && file_exists($template)) {
-                    return view($template);
-                }
+            if ($type === 'origin') {
+                return $response;
             }
 
+            if (is_get() || $type === 'get') {
+                $template = Config('app.exception_tpl');
+                if (!empty($template) && file_exists($template)) {
+                    return view($template, array('response' => $response));
+                }
+            }
             return response(json_encode($response, JSON_UNESCAPED_UNICODE));
         }
 
@@ -330,19 +328,13 @@
 
                     // $response->header(["Access-Control-Allow-Origin" => "*"]);
                     $response->header(['Access-Control-Allow-Origin' => $scheme . '://' . $origin]);
-
                     $response->header(['Access-Control-Allow-Credentials' => 'true']); // 设置是否允许发送 cookies
-
                     $response->header(['Access-Control-Expose-Headers' => '*']);
-
                     $response->header(['Access-Control-Allow-Methods' => $methods]);
-
                     // $response->header(["Access-Control-Allow-Headers" => "*"]);
                     $response->header(['Access-Control-Allow-Headers' => 'X-Requested-With,X_Requested_With,Content-Type,token']);
                 }
             }
-
             return $response;
         }
-
     }

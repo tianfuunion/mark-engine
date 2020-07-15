@@ -1,7 +1,5 @@
 <?php
-
     declare (strict_types=1);
-
     use mark\filesystem\Explorer;
 
     if (!function_exists('p')) {
@@ -236,6 +234,7 @@
             return $result;
         }
     }
+
     if (!function_exists('is_json')) {
         /**
          * 当前是否JSON请求
@@ -247,6 +246,7 @@
             return false !== strpos($_SERVER['HTTP_ACCEPT'], 'json');
         }
     }
+
     if (!function_exists('is_cli')) {
         /**
          * 判断是否为命令行模式方法请求
