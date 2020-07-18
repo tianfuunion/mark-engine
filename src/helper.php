@@ -1,5 +1,6 @@
 <?php
     declare (strict_types=1);
+
     use mark\filesystem\Explorer;
 
     if (!function_exists('p')) {
@@ -167,7 +168,6 @@
          */
         function getRequestUrl()
         {
-            /** 可获取调用页面的URL*/
             return utf8_encode($_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . ':' . $_SERVER['REQUEST_URI']);
         }
     }
@@ -243,6 +243,9 @@
          */
         function is_json(): bool
         {
+            if (!isset($_SERVER['HTTP_ACCEPT'])) {
+                return false;
+            }
             return false !== strpos($_SERVER['HTTP_ACCEPT'], 'json');
         }
     }
