@@ -264,14 +264,18 @@
     if (!function_exists('is_ssl')) {
         /**
          * 判断是否SSL协议
+         *
          * @return bool
          */
         function is_ssl()
         {
             if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
                 return true;
-            } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
-                //https使用端口443
+            } elseif (isset($_SERVER['REQUEST_SCHEME']) && 'https' == $_SERVER['REQUEST_SCHEME']) {
+                return true;
+            } elseif (isset($_SERVER['SERVER_PORT']) && '443' == $_SERVER['SERVER_PORT']) {
+                return true;
+            } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' == $_SERVER['HTTP_X_FORWARDED_PROTO']) {
                 return true;
             }
             return false;
