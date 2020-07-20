@@ -261,6 +261,23 @@
         }
     }
 
+    if (!function_exists('is_ssl')) {
+        /**
+         * 判断是否SSL协议
+         * @return bool
+         */
+        function is_ssl()
+        {
+            if (isset($_SERVER['HTTPS']) && ('1' == $_SERVER['HTTPS'] || 'on' == strtolower($_SERVER['HTTPS']))) {
+                return true;
+            } elseif (isset($_SERVER['SERVER_PORT']) && ('443' == $_SERVER['SERVER_PORT'])) {
+                //https使用端口443
+                return true;
+            }
+            return false;
+        }
+    }
+
     if (!function_exists('UnicodeEncode')) {
         /**
          * 下面来看PHP Unicode编码方法，将中文转为Unicode字符，例如将新浪微博转换为unicode字符串，代码如下
@@ -373,9 +390,7 @@
                 }
 
                 $css_src = app()->env->get('style');
-
                 if (!empty($css_src)) {
-
                     if (!in_array($css, $css_src)) {
                         $css_src[] = $css;
                         // $css_src = array_unique($css_src);
@@ -425,9 +440,7 @@
                 }
 
                 $js_src = app()->env->get('script');
-
                 if (!empty($js_src)) {
-
                     if (!in_array($js, $js_src)) {
                         $js_src[] = $js;
                         // $css_src = array_unique($css_src);
@@ -931,7 +944,6 @@
                     $spacing .
                     substr($phone, (int)$start + (int)$end);
             }
-
             return $phone;
         }
     }
@@ -948,7 +960,6 @@
             if (empty($string) && $string === '') {
                 return $string;
             }
-
             return explode($separator, $string);
         }
     }
@@ -1000,7 +1011,6 @@
             if (is_array($array) && count($array) > 0 && !empty($field)) {
                 return array_sum(array_column($array, $field));
             }
-
             return 0;
         }
     }
@@ -1022,7 +1032,6 @@
             }
 
             return $file . '?v=' . date('YmdHis', $ver);
-
         }
     }
 
@@ -1055,10 +1064,8 @@
                     if (!$middle) {
                         return mb_substr($string, 0, $length, $charset) . $etc;
                     }
-
                     return mb_substr($string, 0, $length / 2, $charset) . $etc . mb_substr($string, -$length / 2, $length, $charset);
                 }
-
                 return $string;
             }
 
@@ -1096,7 +1103,6 @@
             if (!preg_match("/\.[a-z]+$/i", $host) && !preg_match("/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/", $host)) return "";
 
             return $host;
-
         }
     }
 
@@ -1119,7 +1125,6 @@
                 preg_match("/(.*?)([^.]+\.[^.]+)$/", $host, $matches);
                 if ($matches) return $matches[2];
             }
-
             return "";
         }
     }
