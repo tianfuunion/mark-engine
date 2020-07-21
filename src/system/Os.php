@@ -382,47 +382,47 @@
             $browser = array('title' => '未知浏览器', 'name' => '', 'version' => 0);
             try {
                 if (stripos($agent, 'AlipayClient') > 0) {
-                    $match = preg_match("/AlipayClient\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/AlipayClient\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '支付宝', 'name' => 'AliPay', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'DingTalk') > 0) {
-                    $match = preg_match("/DingTalk\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/DingTalk\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '钉钉', 'name' => 'DingTalk', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'Quark') > 0) {
-                    $match = preg_match("/Quark\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Quark\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '夸克浏览器', 'name' => 'Quark', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'UCBrowser') > 0) {
-                    $match = preg_match("/UCBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/UCBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'UC浏览器', 'name' => 'UCBrowser', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'UBrowser') > 0) {
-                    $match = preg_match("/UBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/UBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'UC电脑版', 'name' => 'UBrowser', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'WindowsWechat') > 0) {
-                    $match = preg_match("/MicroMessenger\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/MicroMessenger\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '微信电脑版', 'name' => 'WindowsWechat', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'MicroMessenger') > 0) {
-                    $match = preg_match("/MicroMessenger\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/MicroMessenger\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '微信', 'name' => 'WeChat', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'MQQBrowser') > 0) {
-                    $match = preg_match("/MQQBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/MQQBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '手机QQ', 'name' => 'MQQBrowser', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'QQBrowser') > 0) {
-                    $match = preg_match("/QQBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/QQBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'QQ浏览器', 'name' => 'QQBrowser', 'version' => $matches[1]);
                     }
@@ -442,27 +442,27 @@
                         $browser = array('title' => '搜狗浏览器', 'name' => 'MetaSr', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'Maxthon') > 0) {
-                    $match = preg_match("/Maxthon\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Maxthon\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '傲游浏览器', 'name' => 'Maxthon', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'OPR') > 0) {
-                    $match = preg_match("/OPR\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/OPR\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '欧朋浏览器', 'name' => 'Opera', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, '2345Explorer') > 0) {
-                    $match = preg_match("/2345Explorer\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/2345Explorer\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '2345浏览器', 'name' => '2345Explorer', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'OppoBrowser') > 0) {
-                    $match = preg_match("/OppoBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/OppoBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'OPPO浏览器', 'name' => 'OPPO', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'VivoBrowser') > 0) {
-                    $match = preg_match("/VivoBrowser\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/VivoBrowser\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'VIVO浏览器', 'name' => 'VIVO', 'version' => $matches[1]);
                     }
@@ -473,27 +473,27 @@
                     }
                 } elseif (stripos($agent, 'Edge') > 0) {
                     //win10 Edge浏览器 添加了chrome内核标记 在判断Chrome之前匹配
-                    $match = preg_match("/Edge\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Edge\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '微软浏览器', 'name' => 'Edge', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'Trident') > 0) {
-                    $match = preg_match("/Trident\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Trident\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '微软浏览器', 'name' => 'Trident', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'rv:') > 0 && stripos($agent, 'Gecko') > 0) {
-                    $match = preg_match("/rv:([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/rv:([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '微软浏览器', 'name' => 'IE', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'Chrome') > 0) {
-                    $match = preg_match("/Chrome\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Chrome\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => 'Google浏览器', 'name' => 'Chrome', 'version' => $matches[1]);
                     }
                 } elseif (stripos($agent, 'Safari') > 0) {
-                    $match = preg_match("/Safari\/([\d.]+)/", $agent, $matches);
+                    $match = preg_match("/Safari\/([\d.]+)/i", $agent, $matches);
                     if ($match) {
                         $browser = array('title' => '苹果浏览器', 'name' => 'Safari', 'version' => $matches[1]);
                     }
@@ -533,14 +533,23 @@
         }
 
         /**
-         * 检测是否为移动浏览器
-         * 已经可用，但特殊浏览器，没有agent 属性或为空，则无法检测
-         *
+         * 检测是否使用手机访问
+         * @access public
          * @return bool
          */
-        public static function isMobile()
+        public static function isMobile(): bool
         {
-            return preg_match('/Mobile|mini|Fennec|Android|iP(ad|od|hone)/', self::getAgent()) > 0;
+            if (isset($_SERVER['HTTP_VIA']) && stristr($_SERVER['HTTP_VIA'], "wap")) {
+                return true;
+            } elseif (isset($_SERVER['HTTP_ACCEPT']) && strpos(strtoupper($_SERVER['HTTP_ACCEPT']), "VND.WAP.WML")) {
+                return true;
+            } elseif (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])) {
+                return true;
+            } elseif (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $_SERVER['HTTP_USER_AGENT'])) {
+                return true;
+            }
+
+            return false;
         }
 
         /**
