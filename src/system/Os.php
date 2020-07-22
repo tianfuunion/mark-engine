@@ -67,9 +67,10 @@
         /**
          * 获取客户端操作系统信息包括win10
          *
-         * @return array
+         * @param $flag
+         * @return array|string
          */
-        public static function getOs()
+        public static function getOs($flag = '')
         {
             $agent = strtolower(self::getAgent());
             try {
@@ -183,9 +184,25 @@
                     $version = 0;
                 }
             } catch (Exception $e) {
-                // log::error('Os::getOs()' . $e->getMessage());
                 $os = $e->getMessage();
                 $version = 0;
+            }
+
+            switch ($flag) {
+                case 'os':
+                    return strtolower($os);
+                    break;
+                case 'version':
+                    return strtolower($version);
+                    break;
+                case 'array':
+                    return array('os' => $os, 'version' => $version);
+                    break;
+                case 'string':
+                    return $os . '_' . $version;
+                    break;
+                default:
+                    break;
             }
 
             return array('os' => $os, 'version' => $version);
@@ -196,9 +213,10 @@
          * private $brand;  设备品牌
          * private $model; 设备型号
          *
-         * @return array
+         * @param string $flag
+         * @return array|string
          */
-        public static function getBrand()
+        public static function getBrand($flag = '')
         {
             $agent = strtolower(self::getAgent());
             $brand = self::isMobile() ? '手机' : '计算机';
@@ -366,15 +384,32 @@
             } catch (Exception $e) {
             }
 
+            switch ($flag) {
+                case 'brand':
+                    return strtolower($brand);
+                    break;
+                case 'model':
+                    return strtolower($model);
+                    break;
+                case 'array':
+                    return array('brand' => $brand, 'model' => $model);
+                    break;
+                case 'string':
+                    return $brand . '_' . $model;
+                    break;
+                default:
+                    break;
+            }
+
             return array('brand' => $brand, 'model' => $model);
         }
 
         /**
          * 获取客户端浏览器信息 添加win10 edge浏览器判断
          *
-         * @return array
+         * @return array|string
          */
-        public static function getBrowser()
+        public static function getBrowser($flag = '')
         {
             // 获取用户代理字符串
             $agent = self::getAgent();
@@ -501,7 +536,9 @@
             } catch (Exception $e) {
             }
             $browser['kernel'] = self::getKernel();
-
+            if ($flag == 'string') {
+                return implode("_", $browser);
+            }
             return $browser;
         }
 
@@ -633,6 +670,10 @@
                 return '5G';
             }
 
+            if (stripos($agent, 'NetType/6G')) {
+                return '6G';
+            }
+
             return '';
         }
 
@@ -649,7 +690,7 @@
         /**
          * 获得访问者浏览器语言
          *
-         * @return mixed|string
+         * @return string
          */
         public static function getLang()
         {
@@ -665,7 +706,7 @@
                 }
             }
 
-            return $lang;
+            return strtolower($lang);
         }
 
         /**
@@ -709,11 +750,9 @@
         {
             return array(
                 'agent' => self::getAgent(),
-                'os' => (self::getOs())['os'],
-                'version' => (self::getOs())['version'],
+                'os' => self::getOs(),
 
-                'brand' => (self::getBrand())['brand'],
-                'model' => (self::getBrand())['model'],
+                'brand' => self::getBrand(),
 
                 'browser' => self::getBrowser(),
                 'ismobile' => self::isMobile(),
