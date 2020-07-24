@@ -1,0 +1,28 @@
+<nav class="navbar left right weui-tabbar fixed-bottom container wrap" data-role="navbar">
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'index'}>active<{/if}>" href="<{$Think.config.app.host|default='/'}>">
+        <svg class="icon icon-home weui-tabbar__icon" aria-hidden="true">
+            <use xlink:href="#icon-Steering_wheel"></use>
+        </svg>
+        <p class="tab-label weui-tabbar__label mui-tab-label">首页</p>
+    </a>
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'market'}>active<{/if}>" href="<{$Think.config.app.market.host|default=''}>/market.php">
+        <svg class="icon icon-shop weui-tabbar__icon" aria-hidden="true">
+            <use xlink:href="#icon-shop"></use>
+        </svg>
+        <p class="tab-label weui-tabbar__label mui-tab-label">商城</p>
+    </a>
+    <{if !empty($Request.session.gid) and $Request.session.gid lt 10}>
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'portal'}>active<{/if}>" href="<{$Think.config.app.mobile.host|default=''}>/portal.php/found/index">
+        <svg class="icon color-default weui-tabbar__icon" aria-hidden="true">
+            <use xlink:href="#icon-found"></use>
+        </svg>
+        <p class="tab-label weui-tabbar__label mui-tab-label">发现</p>
+    </a>
+    <{/if}>
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'account'}>active<{/if}>" href="<{$Think.config.auth.host|default=''}>/console.php/console">
+        <svg class="icon icon-contact weui-tabbar__icon" aria-hidden="true">
+            <use xlink:href="#icon-avatar"></use>
+        </svg>
+        <p class="tab-label weui-tabbar__label mui-tab-label">我的</p>
+    </a>
+</nav>

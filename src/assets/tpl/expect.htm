@@ -1,0 +1,68 @@
+<{include file="../view/common/header.htm"}>
+<{include file="../view/common/navigation-responsive.htm" theme="bluemode"}>
+<div class="weui-msg container wrap max-width-1024px">
+    <div class="weui-msg__icon-area">
+        <{if !empty($type) and $type eq "error"}>
+        <i class="weui-icon-success weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "warning"}>
+        <i class="weui-icon-warn weui-icon_msg-primary"></i>
+        <{elseif !empty($type) and $type eq "error"}>
+        <i class="weui-icon-warn weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "tips"}>
+        <i class="weui-icon-info weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "waiting"}>
+        <i class="weui-icon-waiting weui-icon_msg"></i>
+        <{else}>
+        <i class="weui-icon-waiting weui-icon_msg"></i>
+        <{/if}>
+    </div>
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title"><{if !empty($mess)}><{$mess}><{else}>敬请期待<{/if}></h2>
+        <p class="weui-msg__desc">程序猿同学正在加班加点开发中……</p>
+    </div>
+    <div class="weui-msg__opr-area weui-btn-area">
+        <a href="<{$Think.config.app.host|default=''}>" class="weui-btn weui-btn_primary ma2">随便逛逛</a>
+        <a href="javascript:history.back();" class="weui-btn weui-btn_default ma2">返回上一页面</a>
+    </div>
+
+    <input type="hidden" id="sec" value="5">
+    <input type="hidden" id="timeout" value="<{$timeout|default=1}>">
+    <input type="hidden" id="location" value="<{$location|default=''}>">
+
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+            <p class="weui-footer__links">
+                <a href="<{$Think.config.app.host|default=''}>" class="weui-footer__link"><{$Think.config.app.title|default=''}></a></p>
+            <p class="weui-footer__text"><{$Think.config.app.copyright|default=''}></p>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+    try {
+        var seco = document.getElementById("sec");
+        var time = $('#timeout').val().trim();
+        var tt = setInterval(function () {
+            time--;
+            seco.innerHTML = time;
+            if (time <= 0) {
+                if (!is_empty($("#location").val().trim())) {
+                    // history.replaceState('forward', null, $("#location").val().trim());
+                    location.replace($("#location").val().trim());
+                }
+                clearInterval();
+            }
+        }, 1000);
+
+        function stop(obj) {
+            clearInterval(tt);
+            obj.style.display = "none";
+        }
+    } catch (err) {
+
+    }
+</script>
+<{include file="../view/common/footer.htm"}>

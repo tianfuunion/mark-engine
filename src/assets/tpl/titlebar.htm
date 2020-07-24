@@ -1,0 +1,9 @@
+<header id="header" name="titlebar" class="container wrap weui-header titlebar navi-bar bg-titlebar">
+    <svg name="cancel" class="cancel icon color-white" onclick="if(history.length>1){history.back(-1);}else{ window.location.href='/';}" aria-hidden="true">
+        <use xlink:href="#icon-arrow-left"></use>
+    </svg>
+    <div class="title color-white ellipsis"><{$settitle|default=''}></div>
+    <svg name="confirm" class="confirm icon color-white" aria-hidden="true">
+        <use xlink:href="#icon-more"></use>
+    </svg>
+</header>

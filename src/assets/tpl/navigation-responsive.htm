@@ -1,0 +1,225 @@
+<header class="header-responsive am-topbar am-topbar-inverse admin-header [theme] [class] [style]">
+    <nav class="nav-flex navigationBarBgColor">
+        <a class="nav-left nav-logo center wrap" href="javascript:void(0);" data-target="#mk-collapse-left">
+            <img class="logo" src="/static/logo_square_white.png" data-src="/static/logo.png" alt="Logo" title="<{$Think.config.app.title}>">
+        </a>
+        <div class="navigation-middle nav-middle -am-collapse -am-topbar-collapse">
+            <{if !empty($Request.isMobile) and $Request.isMobile}>
+            <div class="nav-title"><{if !empty($settitle)}><{$settitle}><{else}><{$Think.config.app.title}><{/if}></div>
+            <{else}>
+
+            <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right admin-header-list tpl-header-list am-hide-sm-only">
+                <{if !empty($channel_titlebar)}>
+                <{foreach $channel_titlebar as $key => $item}>
+                <{if !empty($item.parentid eq 0 and $item.titlebar eq 1)}>
+                <li class="am-hide-sm-only am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link navigationBarTextColor" href="javascript:void(0);">
+                        <span class="am-icon-<{$item.icon}>"></span>
+                        <{$item.title}>
+                        <span class="am-badge tpl-badge-success am-round hide">5</span>
+                    </a>
+                    <ul class="am-dropdown-content tpl-dropdown-content">
+                        <{foreach $channel_titlebar as $skey => $sub}>
+                        <{if $item.channelid eq $sub.parentid and $sub.titlebar eq 1}>
+                        <li class="tpl-dropdown-content-external">
+                            <a href="<{$Request.scheme}>://<{$sub.url}>" class="tpl-dropdown-list-fl">
+                                <span class="am-icon-btn <{$sub.icon}> tpl-dropdown-ico-btn-size tpl-badge-success"></span>
+                                <{$sub.title}>
+                            </a>
+                            <span class="tpl-dropdown-list-fr"></span>
+                        </li>
+
+                        <{foreach $channel_titlebar as $tkey => $three}>
+                        <{if $sub.channelid eq $three.parentid and $three.titlebar eq 1}>
+                        <li class="tpl-dropdown-content-external">
+                            <a href="<{$Request.scheme}>://<{$three.url}>" class="tpl-dropdown-list-fl">
+                                <span class="am-icon-btn <{$three.icon}> tpl-dropdown-ico-btn-size tpl-badge-success"></span>
+                                <{$three.title}>
+                            </a>
+                            <span class="tpl-dropdown-list-fr"></span>
+                        </li>
+                        <{/if}>
+                        <{/foreach}>
+                        <{/if}>
+                        <{/foreach}>
+                    </ul>
+                </li>
+                <{/if}>
+                <{/foreach}>
+                <{/if}>
+                <{if !empty($Request.session.union) and $Request.session.union.roleid lt 10}>
+                <li class="am-dropdown hide" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:void(0);">
+                        <span class="am-icon-bell-o"></span> 提醒
+                        <span class="am-badge tpl-badge-success am-round">5</span>
+                    </a>
+                    <ul class="am-dropdown-content tpl-dropdown-content">
+                        <li class="tpl-dropdown-content-external">
+                            <h3>你有 <span class="tpl-color-success">5</span> 条提醒</h3>
+                            <a class="float-right" href="javascript:void(0);">全部</a></li>
+                        <li class="tpl-dropdown-list-bdbc">
+                            <a href="#" class="tpl-dropdown-list-fl"><span class="am-icon-btn am-icon-plus tpl-dropdown-ico-btn-size tpl-badge-success"></span> 【预览模块】移动端 查看时 手机、电脑框隐藏。</a>
+                            <span class="tpl-dropdown-list-fr">3小时前</span>
+                        </li>
+                        <li class="tpl-dropdown-list-bdbc">
+                            <a href="#" class="tpl-dropdown-list-fl"><span class="am-icon-btn am-icon-check tpl-dropdown-ico-btn-size tpl-badge-danger"></span> 移动端，导航条下边距处理</a>
+                            <span class="tpl-dropdown-list-fr">15分钟前</span>
+                        </li>
+                        <li class="tpl-dropdown-list-bdbc">
+                            <a href="#" class="tpl-dropdown-list-fl"><span class="am-icon-btn am-icon-bell-o tpl-dropdown-ico-btn-size tpl-badge-warning"></span> 追加统计代码</a>
+                            <span class="tpl-dropdown-list-fr">2天前</span>
+                        </li>
+                    </ul>
+                </li>
+                <li class="am-dropdown hide" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:void(0);">
+                        <span class="am-icon-comment-o"></span> 消息
+                        <span class="am-badge tpl-badge-danger am-round">9</span>
+                    </a>
+                    <ul class="am-dropdown-content tpl-dropdown-content">
+                        <li class="tpl-dropdown-content-external">
+                            <h3>你有 <span class="tpl-color-danger">9</span> 条新消息</h3>
+                            <a class="float-right" href="javascript:void(0);">全部</a></li>
+                        <li>
+                            <a href="#" class="tpl-dropdown-content-message">
+                                <span class="tpl-dropdown-content-photo">
+                      <img src="//open.tianfu.ink/libs/amazeui/images/user02.png" alt=""> </span>
+                                <span class="tpl-dropdown-content-subject">
+                      <span class="tpl-dropdown-content-from"> 禁言小张 </span>
+                                <span class="tpl-dropdown-content-time">10分钟前 </span>
+                                </span>
+                                <span class="tpl-dropdown-content-font"> Amaze UI 的诞生，依托于 GitHub 及其他技术社区上一些优秀的资源；Amaze UI 的成长，则离不开用户的支持。 </span>
+                            </a>
+                            <a href="#" class="tpl-dropdown-content-message">
+                                <span class="tpl-dropdown-content-photo">
+                      <img src="//open.tianfu.ink/libs/amazeui/images/user03.png" alt=""> </span>
+                                <span class="tpl-dropdown-content-subject">
+                      <span class="tpl-dropdown-content-from"> Steam </span>
+                                <span class="tpl-dropdown-content-time">18分钟前</span>
+                                </span>
+                                <span class="tpl-dropdown-content-font"> 为了能最准确的传达所描述的问题， 建议你在反馈时附上演示，方便我们理解。 </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <li class="am-dropdown hide" data-am-dropdown data-am-dropdown-toggle>
+                    <a class="am-dropdown-toggle tpl-header-list-link" href="javascript:void(0);">
+                        <span class="am-icon-calendar"></span> 进度
+                        <span class="am-badge tpl-badge-primary am-round">4</span>
+                    </a>
+                    <ul class="am-dropdown-content tpl-dropdown-content">
+                        <li class="tpl-dropdown-content-external">
+                            <h3>你有 <span class="tpl-color-primary">4</span> 个任务进度</h3>
+                            <a class="float-right" href="javascript:void(0);">全部</a></li>
+                        <li>
+                            <a href="javascript:void(0);" class="tpl-dropdown-content-progress">
+                                <span class="task">
+                                    <span class="desc">Amaze UI 用户中心 v1.2 </span>
+                                    <span class="percent">45%</span>
+                                </span>
+                                <span class="progress">
+                        <div class="am-progress tpl-progress am-progress-striped">
+                            <div class="am-progress-bar am-progress-bar-success" style="width:45%"></div>
+                        </div>
+                    </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="tpl-dropdown-content-progress">
+                                <span class="task">
+                        <span class="desc">新闻内容页 </span>
+                                <span class="percent">30%</span>
+                                </span>
+                                <span class="progress">
+                       <div class="am-progress tpl-progress am-progress-striped">
+                           <div class="am-progress-bar am-progress-bar-secondary" style="width:30%"></div>
+                       </div>
+                    </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="tpl-dropdown-content-progress">
+                                <span class="task">
+                        <span class="desc">管理中心 </span>
+                                <span class="percent">60%</span>
+                                </span>
+                                <span class="progress">
+                        <div class="am-progress tpl-progress am-progress-striped">
+                            <div class="am-progress-bar am-progress-bar-warning" style="width:60%"></div>
+                        </div>
+                    </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+                <{/if}>
+            </ul>
+            <{/if}>
+        </div>
+
+        <div class="nav-right center wrap am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+            <a class="nav-user am-dropdown-toggle tpl-header-list-link" href="javascript:void(0);" data-target="#mk-collapse-menubar">
+                <img class="avatar border circle" src="<{$Think.config.auth.avatar}>/<{$Request.session.avatar|default='avatar_details.png'}>" alt="">
+            </a>
+        </div>
+    </nav>
+
+</header>
+
+<div id="mk-collapse-left" class="collapse mk-collapse-container mk-sidebar-left top-50px"
+     data-title="左侧边栏"
+     data-id="mk-collapse"
+     data-token="mk-collapse-sidebar-left-<{$Request.session.union.roleid|default='404'}>"
+     data-module="mk-collapse"
+     data-type="sidebar"
+     data-animation=""
+     data-gravity="sidebar-left"
+     data-defined="false"
+     data-overlay="true"
+     data-searchbar="true"
+     data-collapse="false"
+     data-required="true"
+     data-target="true"
+     debug="<{if !empty($Request.session.system.debug) and $Request.session.system.debug eq 1}>true<{else}>false<{/if}>"
+     data-debug="<{if $Request.env.APP_DEBUG and $Request.session.gid lt 10 and !empty($Request.session.system.debug) and $Request.session.system.debug eq 1}>true<{else}>false<{/if}>"
+     data-cache="<{if !empty($Request.session.system.cache) and $Request.session.system.cache eq 1}>false<{else}>true<{/if}>"
+     data-expire="<{$Think.config.session.expire|default='86400'}>"
+     data-project="<{$Request.server.script_name|substr='1','-4'|lower}>"
+     data-controller="<{$Request.controller|lower}>"
+     data-action="<{$Request.action|lower}>"
+     data-url="<{$Think.config.auth.host}>/api.php/ram/sidebar?action=list&type=sidebar&poolid=<{$Think.config.auth.poolid|default=''}>&appid=<{$Think.config.auth.appid|default=''}>&roleid=<{$Request.session.union.roleid|default='404'}>&cache=<{$Request.get.cache|default='1'}>">
+</div>
+
+<div id="mk-collapse-menubar" class="collapse mk-collapse-container mk-menubar-top top-50px"
+     data-title="菜单栏"
+     data-id="mk-collapse-menubar"
+     data-token="mk-collapse-menubar-<{$Request.session.union.roleid|default='404'}>"
+     data-module="mk-collapse"
+     data-type="menubar"
+     data-animation=""
+     data-gravity="menubar"
+     data-defined="false"
+     data-overlay="false"
+     data-searchbar="false"
+     data-collapse="false"
+     data-required="true"
+     debug="<{if !empty($Request.session.system.debug) and $Request.session.system.debug eq 1}>true<{else}>false<{/if}>"
+     data-debug="<{if $Request.env.APP_DEBUG and $Request.session.gid lt 10 and !empty($Request.session.system.debug) and $Request.session.system.debug eq 1}>true<{else}>false<{/if}>"
+     data-cache="<{if !empty($Request.session.system.cache) and $Request.session.system.cache eq 1}>false<{else}>true<{/if}>"
+     data-expire="<{$Think.config.session.expire|default='86400'}>"
+     data-project="<{$Request.server.script_name|substr='1','-4'|lower}>"
+     data-controller="<{$Request.controller|lower}>"
+     data-action="<{$Request.action|lower}>"
+     data-url="<{$Think.config.auth.host}>/api.php/ram/menubar?action=list&type=menubar&poolid=<{$Think.config.auth.poolid|default=''}>&appid=<{$Think.config.auth.appid|default=''}>&roleid=<{$Request.session.union.roleid|default='404'}>&cache=<{$Request.get.cache|default='1'}>">
+</div>
+<script type="text/javascript">
+    document.body.style.paddingTop = "50px";
+
+    $(document).ready(function () {
+        if (window.top !== window.self) {
+            top.location = self.location;
+        }
+    });
+</script>

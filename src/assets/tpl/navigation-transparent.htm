@@ -1,0 +1,74 @@
+<!-- 导航栏 * 透明-->
+<header class="am-topbar am-topbar-inverse admin-header header-responsive">
+    <nav class="nav-flex navigation-responsive am-collapse am-topbar-collapse pd0" id="topbar-collapse">
+        <a class="nav-left figure flag-item -am-topbar-brand" href="javascript:void(0);">
+            <img class="logo filter-brightness-9" src="/static/logo_square_white.png" data-src="/static/logo.png" alt="Logo" title="<{$Think.config.app.title}>">
+        </a>
+
+        <a class="nav-right -am-topbar-btn float-right am-dropdown-toggle tpl-header-list-link am-show-sm-only center wrap" href="javascript:void(0);" data-am-collapse="{target: '#topbar-collapse'}">
+            <span class="am-icon-navicon"></span>
+            <span class="am-sr-only">导航切换</span>
+        </a>
+    </nav>
+
+    <div class="float-right am-dropdown" data-am-dropdown data-am-dropdown-toggle>
+
+        <ul class="am-dropdown-content">
+
+            <li>
+                <a href="<{$Think.config.auth.host}>/account.php/home">
+                    <{$Request.session.nickname|default='侠名'}>
+                    （<{$Request.session.title|default=''}>）
+                </a>
+            </li>
+
+            <{if !empty($channel_nav)}>
+            <{foreach $channel_nav as $key => $item}>
+            <{if $item.menubar eq 1}>
+            <li>
+                <a href="<{$Request.scheme}>://<{$item.host}><{$item.url}>">
+                    <span class="am-icon-<{$item.icon}>"></span>
+                    <{$item.title}>
+                </a>
+                <span class="tpl-dropdown-list-fr"></span>
+            </li>
+            <{/if}>
+            <{/foreach}>
+            <{/if}>
+        </ul>
+    </div>
+</header>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if (window.top !== window.self) {
+            top.location = self.location;
+        }
+
+        /**========================== 构建侧边导航下拉列表 ==========================*/
+        /*
+        $("#collapse").collapse({
+            "title": "导航右侧按钮",
+            "name": "navright",
+            "action": "",
+            "data": "<{$Think.config.app.host}>/api.php/ram/channel",
+        });
+        */
+
+        /**========================== 侧边导航下拉列表 ==========================*/
+        $(document).on("click", ".nav-left", function (event) {
+            $(".mk-collapse-container.mk-sidebar-left").toggleClass("visible");
+        });
+        $(document).on("click", ".nav-right", function (event) {
+            $(".mk-collapse-container.mk-sidebar-right").toggleClass("visible");
+            /*
+             $(this)
+                 .siblings(".menubar_dropdown")
+                 .slideToggle()
+                 .end()
+                 .find(".am-icon-navicon")
+                 .toggleClass("tpl-left-nav-more-ico-rotate");
+             */
+        });
+    });
+</script>

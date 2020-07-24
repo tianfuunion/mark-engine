@@ -1,0 +1,31 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>浏览器版本过低</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<style>
+.ts-upgrade {width: 451px;height: 400px;text-align: center;font-size: 18px;font-family: "PingFangSC-Regular";position: absolute;top: 50%;left: 50%;margin-left: -225px;*margin-left: -225px;_margin-left: -225px;margin-top: -200px;*margin-top: -200px;_margin-top: -200px;}
+.ts-img {display: inline-block;margin-bottom: 20px;*margin-bottom: 20px;_margin-bottom: 20px;}
+
+.ts-tips {color: #666;line-height: 21px;margin-bottom: 10px;*margin-bottom: 10px;_margin-bottom: 10px;margin-top: 10px;*margin-top: 10px;_margin-top: 10px;}
+
+.ts-btn {width: 160px;height: 46px;line-height: 46px;color: #FFF;background: #3166FF;border-radius: 3px;margin: 20px auto 0 auto;*margin-top: 20px;_margin-top: 20px;cursor: pointer;}
+</style>
+
+</head>
+<body>
+    <div class="ts-upgrade" id="ts-block">
+        <!-- 易推图床 -->
+        <img class="ts-img" src="https://issuecdn.baidupcs.com/issue/netdisk/ts_ad/help/1537325886.png" alt="浏览器版本过低">
+        <p class="ts-tips">您正在使用的浏览器版本过低，将不能正常浏览内容商城</p>
+        <p class="ts-tips">请升级浏览器到IE8以上，或更换浏览器</p>
+        <p class="ts-btn" id="downloadBtn">升级IE浏览器</p>
+    </div>
+    <script>
+        var oDownloadBtn = document.getElementById('downloadBtn');
+        oDownloadBtn.onclick = function () {
+            window.open('https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads');
+        };
+    </script>
+
+</body></html>

@@ -1,0 +1,7 @@
+<div class="tips">
+    <div class="section">
+        <div id="outmess" class='tip-msg <{if $mess eq error}>error-msg<{/if}><{if $mess eq ok}>sucess-msg<{/if }>'>
+            <{$mess|default=''}>
+        </div>
+    </div>
+</div>

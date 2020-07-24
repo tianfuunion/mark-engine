@@ -1,0 +1,24 @@
+<{include file="../view/common/header.htm"}>
+<{include file="../view/common/navigation-responsive.htm" theme="bluemode"}>
+<div class="weui-msg wrap max640">
+    <div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title">无效二维码</h2>
+        <p class="weui-msg__desc">本平台无法处理其它二维码<br>欢迎扫描<{$Think.config.app.title}>二维码付款</p>
+    </div>
+    <div class="weui-msg__opr-area">
+        <p class="weui-btn-area">
+            <a href="javascript:void(0);" onclick="scan()" class="weui-btn weui-btn_primary">重新扫描</a>
+            <a href="javascript:history.back(-1);" class="weui-btn weui-btn_default">返回上一页</a>
+        </p>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+            <p class="weui-footer__links">
+                <a href="javascript:void(0);" class="weui-footer__link"><{$Think.config.app.title}></a>
+            </p>
+            <p class="weui-footer__text"><{$Think.config.app.copyright}></p>
+        </div>
+    </div>
+</div>
+<{include file="../view/common/footer.htm"}>

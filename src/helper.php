@@ -884,7 +884,7 @@
             }
 
             //清除换行符、换行符、制表符
-            $css_content = str_replace(array("\r\n", "\n", "\t", "../images/"), array("", "", "", "./../common/images/"), $css_content);
+            $css_content = str_replace(array("\r\n", "\n", "\t", "../images/"), array("", "", "", "./../tpl/images/"), $css_content);
 
             $css_content = compress_html($css_content);
 

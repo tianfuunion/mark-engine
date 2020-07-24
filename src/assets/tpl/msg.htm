@@ -1,0 +1,93 @@
+<{include file="../view/common/header.htm"}>
+<{include file="../view/common/navigation-responsive.htm" theme="bluemode"}>
+<div class="weui-msg container wrap max-width-640px">
+    <div class="weui-msg__icon-area">
+        <{if !empty($type) and $type eq "success"}><i class="weui-icon-success weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "tips"}><i class="weui-icon-info weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "info"}><i class="weui-icon-info weui-icon_msg"></i>
+        <{elseif !empty($type) and $type eq "warning"}><i class="weui-icon-warn weui-icon_msg-primary"></i>
+        <{elseif !empty($type) and $type eq "error"}><i class="weui-icon-warn weui-icon_msg -weui-icon-cancel"></i>
+        <{elseif !empty($type) and $type eq "waiting"}><i class="weui-icon-waiting weui-icon_msg"></i>
+        <{else}><i class="weui-icon-info weui-icon_msg"></i><{/if}>
+    </div>
+
+    <div class="weui-msg__text-area">
+        <h2 class="weui-msg__title"><{if !empty($settitle)}><{$settitle}><{else}>提示消息<{/if}></h2>
+        <p class="weui-msg__desc"><{if !empty($desc)}><{$desc}><{else}><{/if}></p>
+
+        <p class="weui-msg__desc hide">在(
+            <span id="sec" style="color:blue;font-weight:bold"><{if !empty($timeout)}><{$timeout}><{else}>3<{/if}></span> )秒后自动跳转。
+        </p>
+    </div>
+
+    <div class="weui-btn-area pb3">
+        <{if !empty($location)}>
+        <a data-href="javascript:void(0);" href="<{$location|default=''}>" class="weui-btn weui-btn_primary">
+            <{if empty($handle)}>立即跳转<{else}><{$handle}><{/if}>
+        </a>
+        <{else}>
+        <a id="acceptsubmit" href="javascript:closeWeixinWebView();" class="weui-btn weui-btn_primary">确认</a>
+        <{/if}>
+        <a id="auxiliary" href="javascript:void(0);" onclick="stop(this)" class="weui-btn weui-btn_default hide">辅助操作</a>
+    </div>
+
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+            <p class="weui-footer__links">
+                <a href="javascript:void(0);" class="weui-footer__link"><{$Think.config.app.title|default=''}></a></p>
+            <p class="weui-footer__text"><{$Think.config.app.copyright|default=''}></p>
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+
+    });
+    var seco = document.getElementById("sec");
+    var time = 0;
+    time = Number("<{$timeout}>");
+    if (time > 0) {
+        var tt = setInterval(function () {
+            if (time <= 0) {
+                if (!is_empty("<{$location|default=''}>")) {
+                    location.href = "<{$location|default=''}>";
+                } else {
+                    history.back(-1);
+                    // closeWeixinWebView();
+                }
+                clearInterval();
+            } else {
+                time--;
+                seco.innerHTML = time;
+            }
+        }, 1000);
+    }
+
+    function stop(obj) {
+        clearInterval(tt);
+        obj.style.display = "none";
+    }
+
+    function innerCloseWebView() {
+        WeixinJSBridge.invoke("closeWindow");
+    }
+
+    function closeWeixinWebView() {
+        console.info("closeWeixinWebView()");
+        if ("<{$Think.config.auth.stores.wechat.status|default='false'}>" || !isWeiXin()) {
+            location.href = "<{$Think.config.app.host|default=''}>";
+        } else if (typeof WeixinJSBridge === "object" && typeof WeixinJSBridge.invoke === "function") {
+            innerCloseWebView();
+        } else if (document.addEventListener) {
+            document.addEventListener("WeixinJSBridgeReady", innerCloseWebView, false);
+        } else if (document.attachEvent) {
+            document.attachEvent("WeixinJSBridgeReady", innerCloseWebView);
+            document.attachEvent("onWeixinJSBridgeReady", innerCloseWebView);
+        } else {
+            console.info("closeWeixinWebView(Error)");
+            location.href = "<{$Think.config.app.host|default=''}>";
+        }
+    }
+</script>
+<{include file="../view/common/footer.htm"}>

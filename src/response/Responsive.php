@@ -3,6 +3,7 @@
 
     namespace mark\response;
 
+    use mark\Mark;
     use think\Response;
 
     use think\facade\Request;
@@ -295,6 +296,8 @@
                 $template = Config('app.exception_tpl');
                 if (!empty($template) && file_exists($template)) {
                     return view($template, array('response' => $response));
+                } else {
+                    return view((new Mark())->getAssetsPath() . 'tpl/exception.htm');
                 }
             }
             return response(json_encode($response, JSON_UNESCAPED_UNICODE));
