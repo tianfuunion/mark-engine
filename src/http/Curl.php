@@ -114,8 +114,8 @@
          * @access protected
          *
          * @param bool $newInstance 是否每次创建新的实例
-         *
          * @return self
+         * @deprecated
          */
         public static function getInstance(bool $newInstance = false): self
         {
