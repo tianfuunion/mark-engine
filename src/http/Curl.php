@@ -26,9 +26,9 @@
      * TRACE：回显服务器收到的请求，主要用于测试或诊断。
      * CONNECT：HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器
      *
-     * 注意：如果当该对象多次调用后，返回的结果为最后一次调用时响应的结果（如响应头，响应代码，请求方法）
+     * @todo 注意：如果当该对象多次调用后，返回的结果为最后一次调用时响应的结果（如响应头，响应代码，请求方法）
      *
-     *
+     * @link PHP CURL参数详解 - https://www.cnblogs.com/g2star/p/3760346.html
      * Class Curl
      *
      * @package    mark\http
@@ -41,26 +41,36 @@
         private $curl;
         private $transfer = true;
 
-        // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
-        private $httpheader = array("Content-type: text/plain", "Content-length: 100");
-
-        private $getheader = array('Content-type:application/x-www-data-urlencode; charset=utf-8; Expect:');
-        private $postheader = array('Content-type:application/x-www-form-urlencoded; charset=utf-8; Expect:');
-        private $uploadheader = array('Content-type:multipart/form-data; charset=utf-8; Expect:');
-
         private $url; // 访问的url
-        private $oriUrl; // referer url
         private $method = 'get'; // 访问方式,默认是GET请求
         /**
          * @link https://www.runoob.com/http/http-content-type.html
          * @var string
          */
         private $content_type = 'text/html';
-        private $location = false; // 是否支持重定向
-        private $maxredirs;
+        private $cache_control = 'no-cache';
+        private $pragma = 'no-cache';
+        private $charset = 'utf-8';
+
+
+        /**
+         * 是否支持重定向(默认不支持)
+         * @see set('location',true)
+         * @var bool
+         */
+        private $location = false;
+        /**
+         * 最大递归返回的数量
+         * @var int
+         */
+        private $maxredirs = 10;
 
         private $timeout = 600;
-        private $connecttimeout = 0; // 在发起连接前等待的时间，如果设置为0，则不等待。
+        /**
+         * 在发起连接前等待的时间，如果设置为0，则不等待。
+         * @var int
+         */
+        private $connectTimeout = 0;
 
         private $formData = array();
         private $fileData = array();
@@ -419,7 +429,7 @@
         public function toJson()
         {
             $json = $this->execute();
-            if ($this->getResponseCode() === 200) {
+            if ($this->getResponseCode() == 200) {
                 if (is_string($json)) {
                     return $json;
                 }
@@ -442,7 +452,7 @@
         public function toArray()
         {
             $json = $this->execute();
-            if ($this->getResponseCode() === 200) {
+            if ($this->getResponseCode() == 200) {
                 if (is_string($json)) {
                     return json_decode($json, true);
                 }
@@ -655,8 +665,8 @@
             if ($this->timeout > 0) {
                 curl_setopt($this->getCurl(), CURLOPT_TIMEOUT, $this->timeout);
             }
-            if ($this->connecttimeout > 0) {
-                curl_setopt($this->getCurl(), CURLOPT_CONNECTTIMEOUT, $this->connecttimeout);
+            if ($this->connectTimeout > 0) {
+                curl_setopt($this->getCurl(), CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);
             }
 
             // 忽略HTTPS的安全证书
@@ -675,6 +685,9 @@
                 curl_setopt($this->getCurl(), CURLOPT_MAXREDIRS, 10);
             }
 
+            // 添加来源referer
+            curl_setopt($this->getCurl(), CURLOPT_REFERER, getRequestUrl());
+
             // 当根据Location:重定向时,自动设置header中的Referer:信息。
             curl_setopt($this->getCurl(), CURLOPT_AUTOREFERER, true);
             // curl_setopt($this->getCurl(), CURLOPT_REFERER, "http://XXX"); // 在HTTP请求头中"Referer: "的内容。
@@ -692,7 +705,8 @@
             }
 
             if ($this->responseHeader) {
-                curl_setopt($this->getCurl(), CURLOPT_HEADER, $this->responseHeader);//设置响应头信息是否返回
+                //设置响应头信息是否返回
+                curl_setopt($this->getCurl(), CURLOPT_HEADER, $this->responseHeader);
             }
 
             // 将curl_exec()获取的信息以文件流的形式返回,而不是直接输出。(自定义默认不输出)
@@ -700,12 +714,14 @@
                 curl_setopt($this->getCurl(), CURLOPT_RETURNTRANSFER, $this->transfer);
             }
 
-            switch (strtolower($this->method)) {
+            switch ($this->getMethod()) {
                 case 'get':
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPGET, true); //设置为get请求
-                    // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
-                    // curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getheader);
+                    //设置为get请求
+                    curl_setopt($this->getCurl(), CURLOPT_HTTPGET, true);
+
+                    // 设置HTTP头字段的数组。
                     curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
+
                     // 重新为Url添加Get参数
                     if (!empty($this->url) && !empty($this->formData)) {
                         $this->url .= (strpos($this->url, '?') === false ? '?' : '&') . http_build_query($this->formData);
@@ -713,8 +729,9 @@
                     }
                     break;
                 case 'post':
-                    curl_setopt($this->getCurl(), CURLOPT_POST, true); //设置为post请求
-                    // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+                    //设置为post请求
+                    curl_setopt($this->getCurl(), CURLOPT_POST, true);
+                    // 设置HTTP头字段的数组
                     curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
 
                     { // TODO：待删除代码块
@@ -861,13 +878,49 @@
             return $result;
         }
 
+        /**
+         * 设置请求字符集
+         * @param string $charset
+         */
+        public function setCharset($charset = 'utf-8')
+        {
+            $this->charset = $charset;
+        }
+
+        /**
+         * 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+         * @param array|string[] $header
+         */
+        public function setheader(array $header = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache'))
+        {
+            if (!empty($header['content-type'])) {
+                $this->content_type = $header['content-type'];
+            }
+            if (!empty($header['charset'])) {
+                $this->charset = $header['charset'];
+            }
+            if (!empty($header['accept'])) {
+                $this->content_type = $header['accept'];
+            }
+            if (!empty($header['cache-control'])) {
+                $this->content_type = $header['cache-control'];
+            }
+            if (!empty($header['pragma'])) {
+                $this->content_type = $header['pragma'];
+            }
+        }
+
+        /**
+         * 获取HTTP头字段的数组
+         * @return string[]
+         */
         private function getHeader()
         {
             return array(
-                'Content-type: ' . $this->content_type . ";charset='utf-8;'",
-                'Accept: ' . $this->content_type,
-                'Cache-Control: no-cache',
-                'Pragma: no-cache',
+                'Content-type: ' . $this->content_type . ';charset=' . $this->charset . ';',
+                'Accept: ' . $_SERVER['HTTP_ACCEPT'],
+                'Cache-Control: ' . $this->cache_control,
+                'Pragma: ' . $this->pragma,
             );
         }
 
@@ -899,7 +952,6 @@
                     return $header;
                 }
             }
-
             return $this->responseHeaderContent;
         }
 
@@ -955,11 +1007,16 @@
          *
          * @return string
          */
-        public function getRequestMethod(): string
+        public function getMethod(): string
         {
-            return $this->method;
+            return strtolower($this->method);
         }
 
+        /**
+         * 设置自定义响应回调
+         * @param HttpResponse $HttpResponse
+         * @todo 待完善
+         */
         public function setHttpResponse(HttpResponse $HttpResponse)
         {
             $this->HttpResponse = $HttpResponse;
@@ -1081,7 +1138,7 @@
         }
 
         /**
-         * 调用实际类的方法
+         * 调用静态方法
          *
          * @param $method
          * @param $params
