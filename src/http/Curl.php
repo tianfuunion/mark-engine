@@ -8,11 +8,12 @@
     use mark\system\Os;
 
     /**
-     * Curl 封装类
+     * Curl for php 封装类
      * @author     Mark<mark@tianfu.ink>
      * @site http://www.tianfuunion.cn
      * @time       2019年10月11日 15:27:00
      * @modifyTime 2020年02月28日 00:38:00
+     * @modifyTime 2020年07月25日 17:00:00
      *
      * HTTP/1.1协议中共定义了八种方法（有时也叫“动作”）来表明Request-URI指定的资源的不同操作方式：
      * OPTIONS：返回服务器针对特定资源所支持的HTTP请求方法。也可以利用向Web服务器发送"*"的请求来测试服务器的功能性。
@@ -25,6 +26,7 @@
      * CONNECT：HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器
      *
      * 注意：如果当该对象多次调用后，返回的结果为最后一次调用时响应的结果（如响应头，响应代码，请求方法）
+     *
      *
      * Class Curl
      *
@@ -118,10 +120,10 @@
         public static function getInstance(bool $newInstance = false): self
         {
             if ($newInstance) {
-                return new self();
+                self::$instance = new self();
             }
 
-            if (!self::$instance) {
+            if (!self::$instance || empty(self::$instance)) {
                 self::$instance = new self();
             }
 
@@ -179,7 +181,7 @@
                     break;
             }
 
-            return self::getInstance(true)->initialize();
+            return $this->initialize();
         }
 
         /**
@@ -195,7 +197,7 @@
             $this->url = $url;
             $this->method = 'post';
             $this->content_type = 'application/x-www-form-urlencoded';
-            return self::getInstance(true)->initialize()->append($data);
+            return $this->initialize()->append($data);
         }
 
         /**
@@ -211,7 +213,7 @@
             $this->method = 'upload';
             $this->content_type = 'multipart/form-data';
 
-            return self::getInstance(true)->initialize();
+            return $this->initialize();
         }
 
         /**
@@ -272,11 +274,8 @@
                 !file_exists($this->filePath)
                 && !mkdir($concurrentDirectory = $this->filePath, 0777, true)
                 && !is_dir($concurrentDirectory)) {
-                // Log::error('Curl::download() The storage path can not be empty.');
-
                 return array('file_name' => '', 'save_path' => '', 'error' => 5);
             }
-
             return '';
         }
 
