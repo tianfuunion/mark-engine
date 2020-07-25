@@ -115,7 +115,6 @@
          *
          * @param bool $newInstance 是否每次创建新的实例
          * @return self
-         * @deprecated
          */
         public static function getInstance(bool $newInstance = false): self
         {
@@ -138,7 +137,7 @@
          *
          * @return $this
          */
-        public function get(string $url, $type = 'html')
+        private function get(string $url, $type = 'html')
         {
             $this->url = $url;
             $this->method = 'get';
@@ -192,7 +191,7 @@
          *
          * @return $this
          */
-        public function post(string $url, $data = array()): self
+        private function post(string $url, $data = array()): self
         {
             $this->url = $url;
             $this->method = 'post';
@@ -207,7 +206,7 @@
          *
          * @return $this
          */
-        public function upload(string $url): self
+        private function upload(string $url): self
         {
             $this->url = $url;
             $this->method = 'upload';
@@ -226,14 +225,12 @@
          *
          * @return $this|array
          */
-        public function download(string $url, $savePath = '', $fileName = '', $suffix = '')
+        private function download(string $url, $savePath = '', $fileName = '', $suffix = '')
         {
             $this->method = 'download';
             $this->content_type = 'application/octet-stream';
 
             if (empty(trim($url))) {
-                // Log::error('Curl::download(URL cannot be empty)');
-
                 return array('file_name' => '', 'save_path' => '', 'error' => 1);
             }
             $this->url = trim($url);
@@ -263,6 +260,10 @@
             }
         }
 
+        /**
+         * 获取文件路径
+         * @return array|string
+         */
         public function getFilePath()
         {
             if (file_exists($this->filePath)) {
@@ -280,6 +281,10 @@
             return '';
         }
 
+        /**
+         * 设置文件名
+         * @param string $filename
+         */
         public function setFileName($filename = ''): void
         {
             //保存文件名
@@ -288,6 +293,11 @@
             }
         }
 
+        /**
+         * 获取文件名
+         * @param bool $all
+         * @return string
+         */
         public function getFileName($all = true): string
         {
             if ($this->fileName !== '') {
@@ -312,6 +322,10 @@
 
         }
 
+        /**
+         * 设置文件后缀
+         * @param string $suffix
+         */
         public function setFileSuffix($suffix = ''): void
         {
             if (trim($suffix) !== '') {
@@ -319,6 +333,10 @@
             }
         }
 
+        /**
+         *获取文件后缀
+         * @return string|string[]
+         */
         public function getFileSuffix()
         {
             // 后缀判断
@@ -1029,9 +1047,9 @@
          */
         protected static function createFacade(bool $newInstance = false)
         {
-            $class = static::getFacadeClass() ?: 'mark\http\Curl';
+            $class = self::getFacadeClass() ?: 'mark\http\Curl';
 
-            if (static::$alwaysNewInstance) {
+            if (self::$alwaysNewInstance) {
                 $newInstance = true;
             }
 
@@ -1044,7 +1062,6 @@
             }
 
             return self::$instance;
-
         }
 
         /**
@@ -1057,8 +1074,21 @@
          */
         public static function __callStatic($method, $params)
         {
+            switch (strtolower($method)) {
+                case 'options':
+                case 'head':
+                case 'get':
+                case 'post':
+                case 'put':
+                case 'delete':
+                case 'trace':
+                case 'connect':
+                    return (new self())->$method($params);
+                    break;
+            }
+
             try {
-                return call_user_func_array([static::createFacade(), $method], $params);
+                return call_user_func_array([self::createFacade(), $method], $params);
             } catch (\Exception $e) {
 
             }
