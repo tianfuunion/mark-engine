@@ -242,7 +242,7 @@
                     break;
             }
 
-            return self::getInstance()->initialize();
+            return self::getInstance(true)->initialize();
         }
 
         /**
@@ -257,12 +257,8 @@
         {
             $this->url = $url;
             $this->method = 'post';
-
             $this->content_type = 'application/x-www-form-urlencoded';
-
-            self::getInstance()->initialize()->append($data);
-
-            return self::getInstance()->initialize();
+            return self::getInstance(true)->initialize()->append($data);
         }
 
         /**
@@ -278,7 +274,7 @@
             $this->method = 'upload';
             $this->content_type = 'multipart/form-data';
 
-            return self::getInstance()->initialize();
+            return self::getInstance(true)->initialize();
         }
 
         /**
