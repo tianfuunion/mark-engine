@@ -1,0 +1,90 @@
+<div class="foot-black"></div>
+<div class="mask loading hide"></div>
+<noscript>
+    <div id="noscript" style="width:20rem;line-height:2rem;position:fixed;top:calc(50% - 7rem);left:calc(50% - 10rem);background:#ffc;border:1px solid #45a5cf;border-radius:10px;text-align:center;z-index: 9999;">您的浏览器不支持JavaScript。<br>请更换浏览器或者修复浏览器！
+    </div>
+</noscript>
+
+<{if $Think.config.auth.stores.wechat.status}>
+<{include file="../view/common/wechat.htm"}>
+<{/if}>
+
+<{if $Request.env.APP_DEBUG or !empty($Request.session.gid) and $Request.session.gid lt 10 and $Request.session.system.fundebug eq 1}>
+<script src="https://js.fundebug.cn/fundebug.2.0.0.min.js" apikey="<{$Think.config.app.fundebug.apikey}>" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://js.fundebug.cn/fundebug.revideo.0.6.2.min.js" crossorigin="anonymous"></script>
+<{/if}>
+<{if $Request.env.APP_DEBUG and !empty($Request.session.gid) and $Request.session.gid lt 10 and $Request.session.system.vconsole eq 1}>
+<!-- 引入vConsole的JS库 -->
+<script type="text/javascript" charset="utf-8" src="//open.tianfu.ink/libs/debug/script/vconsole.min.js?v=3.2.2"></script>
+<script type="text/javascript">
+    window.vConsole = new window.VConsole();
+    console.info("欢迎使用 vConsole。vConsole 是一个由微信公众平台前端团队研发的 Web 前端开发者面板，可用于展示 console 日志，方便开发、调试。");
+    // Mark.debug(true);
+    /*
+     *	Debug info
+     * 	window.onload=function(){
+     */
+    $("#debug .title").on("mousedown", function (e) {
+        var obj = $(this).parent();
+        var x = e.clientX - obj.offset().left;
+        var y = e.clientY - obj.offset().top;
+
+        /*绑定鼠标移动事件**/
+        $(document).on("mousemove", function (e) {
+            var _l = e.clientX - x;
+            var _t = e.clientY - y;
+            obj.css({
+                /*		width : _w, */
+                /*		height : _h, */
+                left: _l,
+                top: _t
+            });
+        }).on("mouseup", function () {
+            $(this).off("mousemove").off("mouseup");
+        });
+
+    }).on("dblclick", function () {
+        var winw = $(window).width();
+        var winh = $(window).height();
+
+        if ($(this).parent().height() >= 500) {
+            winh = 500;
+        }
+        $(this).parent().css({
+            top: 0,
+            left: 0,
+            width: winw,
+            height: winh
+        });
+    });
+</script>
+<{/if}>
+
+<!-- defer="ture" async="ture"  -->
+<{if $Request.env.APP_DEBUG and $Request.session.system.debug eq 1}>
+<{volist name="$Request.env.script" id="js"}>
+<script type="text/javascript" charset="utf-8" src="<{$js.asset}>?v=<{$js.version|default='1.0'}>&t=<{:time()}>"></script>
+<{/volist}>
+<{else}>
+<{volist name="$Request.env.script" id="js"}>
+<script type="text/javascript" charset="utf-8" src="<{$js.asset}>?v=<{$js.version|default='1.0'}>"></script>
+<{/volist}>
+<{/if}>
+
+<script type="text/javascript">
+    var offset_top = 0;
+    window.onload = function () {
+        document.body.onselectstart = document.body.ondrag = function () {
+            return false;
+        }
+    };
+
+    if ('addEventListener' in document) {
+        document.addEventListener('DOMContentLoaded', function () {
+            FastClick.attach(document.body);
+            document.querySelector(".loading").classList.add("hide");
+        }, false);
+    }
+</script>
+</body>
+</html>
