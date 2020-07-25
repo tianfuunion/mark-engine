@@ -5,6 +5,7 @@
 
     use finfo;
     use Exception;
+    use mark\http\response\HttpResponse;
     use mark\system\Os;
 
     /**
@@ -34,7 +35,7 @@
      */
     class Curl
     {
-        /**@var static */
+        /**@var Curl */
         private static $instance;
 
         private $curl;
@@ -75,10 +76,14 @@
         private $request_header_out = false;
 
         // 响应头
-        private $responseCode;        // 响应码
-        private $responseHeader = 0;// 是否接收响应头
+        private $responseCode = 0; // 响应码
+        private $responseHeader = 0; // 是否接收响应头
         private $responseHeaderSize = 0; // 响应头大小
         private $responseHeaderContent = ''; // 响应头内容
+        /**
+         * @var HttpResponse
+         */
+        private $HttpResponse;
 
         private $fileName = '';
         private $fileSuffix = '';
@@ -123,11 +128,7 @@
          */
         public static function getInstance(bool $newInstance = false): self
         {
-            if ($newInstance) {
-                self::$instance = new self();
-            }
-
-            if (!self::$instance || empty(self::$instance)) {
+            if ($newInstance || !self::$instance || empty(self::$instance)) {
                 self::$instance = new self();
             }
 
@@ -699,7 +700,7 @@
                 curl_setopt($this->getCurl(), CURLOPT_RETURNTRANSFER, $this->transfer);
             }
 
-            switch ($this->method) {
+            switch (strtolower($this->method)) {
                 case 'get':
                     curl_setopt($this->getCurl(), CURLOPT_HTTPGET, true); //设置为get请求
                     // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
@@ -786,7 +787,6 @@
                     break;
                 case 'put':
                     //设置请求头(可有可无)
-                    // curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, 0);
                     curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
                     //定义请求类型
                     curl_setopt($this->getCurl(), CURLOPT_CUSTOMREQUEST, 'put');
@@ -795,7 +795,6 @@
                     break;
                 case 'download':
                     //设置请求头(可有可无)
-                    // curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, 0);
                     curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
                     //定义请求类型
                     // curl_setopt($this->getCurl(), CURLOPT_CUSTOMREQUEST, "put");
@@ -823,7 +822,6 @@
 
             if ($result === false) {
                 $this->errmsg = curl_error($this->getCurl());
-                // Log::info('Curl：ErrMsg：' . $this->errmsg);
 
                 return 'Curl Error：' . $this->errmsg;
             }
@@ -878,11 +876,11 @@
          *
          * @note 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应码
          *
-         * @return mixed
+         * @return int
          */
         public function getResponseCode()
         {
-            return $this->responseCode;
+            return intval($this->responseCode);
         }
 
         /**
@@ -962,6 +960,11 @@
             return $this->method;
         }
 
+        public function setHttpResponse(HttpResponse $HttpResponse)
+        {
+            $this->HttpResponse = $HttpResponse;
+        }
+
         /**
          * 4、关闭cURL资源,并且释放系统资源
          *
@@ -1035,13 +1038,6 @@
         }
 
         /**
-         * 始终创建新的对象实例
-         *
-         * @var bool
-         */
-        protected static $alwaysNewInstance;
-
-        /**
          * 获取当前Facade对应类名
          *
          * @access protected
@@ -1051,6 +1047,13 @@
         {
             return 'mark\http\Curl';
         }
+
+        /**
+         * 始终创建新的对象实例
+         *
+         * @var bool
+         */
+        protected static $alwaysNewInstance;
 
         /**
          * 创建Facade实例
@@ -1070,11 +1073,7 @@
                 $newInstance = true;
             }
 
-            if ($newInstance) {
-                return new $class();
-            }
-
-            if (!self::$instance) {
+            if ($newInstance || !self::$instance) {
                 self::$instance = new $class();
             }
 
