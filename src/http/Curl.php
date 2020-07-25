@@ -33,25 +33,21 @@
      */
     class Curl
     {
-
         private $curl;
         private $transfer = true;
-        private $responseHeader = 0;// 是否接收响应头
 
-        // // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
-        // private $httpheader = array("Content-type: text/plain", "Content-length: 100");
+        // 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+        private $httpheader = array("Content-type: text/plain", "Content-length: 100");
 
         private $getheader = array('Content-type:application/x-www-data-urlencode; charset=utf-8; Expect:');
         private $postheader = array('Content-type:application/x-www-form-urlencoded; charset=utf-8; Expect:');
         private $uploadheader = array('Content-type:multipart/form-data; charset=utf-8; Expect:');
-        // private $uploadheader = array("Content-type:multipart/form-data");
 
         private $url; // 访问的url
         private $oriUrl; // referer url
-        private $data; // 可能发出的数据 post,put
         private $method = 'get'; // 访问方式,默认是GET请求
         private $content_type = 'text/html';
-        private $location;
+        private $location = false; // 是否支持重定向
         private $maxredirs;
 
         private $timeout = 600;
@@ -71,10 +67,10 @@
         private $request_header_out = false;
 
         // 响应头
-        private $responseHeaderSize = 0;
-        private $responseHeaderContent = '';
-        // 响应码
-        private $responseCode;
+        private $responseCode;        // 响应码
+        private $responseHeader = 0;// 是否接收响应头
+        private $responseHeaderSize = 0; // 响应头大小
+        private $responseHeaderContent = ''; // 响应头内容
 
         private $fileName = '';
         private $fileSuffix = '';
@@ -82,7 +78,6 @@
 
         /**
          * 构造方法
-         * 1、初始化一个cURL会话。
          *
          * Curl constructor.
          */
@@ -113,7 +108,7 @@
         private static $instance;
 
         /**
-         * 创建Facade实例
+         * 创建Facade实例。
          *
          * @static
          * @access protected
@@ -602,7 +597,6 @@
             } else {
                 // Log::info('Curl::appendFiles(文件不存在)' . $key . ' ' . json_encode($file, JSON_UNESCAPED_UNICODE));
             }
-            // Log::info('Curl::appendFile.formData：' . json_encode($this->formData, JSON_UNESCAPED_UNICODE));
 
             /*
             if(!empty($key)){
@@ -743,7 +737,7 @@
                     // curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getheader);
                     curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
                     // 重新为Url添加Get参数
-                    if (!empty($this->formData)) {
+                    if (!empty($this->url) && !empty($this->formData)) {
                         $this->url .= (strpos($this->url, '?') === false ? '?' : '&') . http_build_query($this->formData);
                         curl_setopt($this->getCurl(), CURLOPT_URL, $this->url);
                     }
@@ -1023,11 +1017,8 @@
         /**
          * 设置中间传递数据
          *
-         * @access public
-         *
-         * @param string $name 参数名
-         * @param mixed $value 值
-         *
+         * @param string $key
+         * @param $value
          * @return $this
          */
         public function __set(string $key, $value)
@@ -1069,7 +1060,6 @@
         {
             list($key, $value) = $params;
             $this->$key = $value;
-
             return $this;
         }
 
