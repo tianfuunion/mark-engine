@@ -255,7 +255,7 @@
          *
          * @return $this|array
          */
-        public function download(string $url, $savePath = '', $fileName = '', $suffix = '')
+        public function download(string $url, $savePath = '', $fileName = '', $suffix = ''): self
         {
             $this->method = 'download';
             $this->content_type = 'application/octet-stream';
@@ -346,7 +346,6 @@
             } catch (Exception $e) {
                 return 'unknown_' . time() . '_' . mt_rand(1000, 9999) . '.' . $this->getFileSuffix();
             }
-
         }
 
         /**
@@ -393,7 +392,7 @@
          *
          * @return $this
          */
-        public function put(string $url)
+        public function put(string $url): self
         {
             $this->url = $url;
 
@@ -407,14 +406,14 @@
          *
          * @return $this
          */
-        public function delete(string $url)
+        public function delete(string $url): self
         {
             $this->url = $url;
 
             return $this;
         }
 
-        public function ftp($url)
+        public function ftp($url): self
         {
             $this->url = $url;
 
@@ -474,7 +473,7 @@
          *
          * @return $this
          */
-        public function append($data)
+        public function append($data): self
         {
             if (!empty($data)) {
                 $this->formData[] = $data;
@@ -489,10 +488,9 @@
          *
          * @param $key
          * @param $value
-         *
          * @return $this
          */
-        public function appendData($key, $value)
+        public function appendData($key, $value): self
         {
             if (!empty($key)) {
                 $this->formData[$key] = $value;
@@ -508,7 +506,7 @@
          *
          * @return $this
          */
-        public function appendJson($value)
+        public function appendJson($value): self
         {
             if (!empty($value)) {
                 $this->formData = $value;
@@ -517,7 +515,7 @@
             return $this;
         }
 
-        public function append_recursive($data)
+        public function append_recursive($data): self
         {
             if (!empty($data)) {
                 $this->formData = array_merge_recursive($this->formData, $data);
@@ -526,7 +524,7 @@
             return $this;
         }
 
-        public function append_push($key, $field, $value)
+        public function append_push($key, $field, $value): self
         {
             if (!empty($value)) {
                 $this->formData[$key][$field] = $value;
@@ -535,7 +533,7 @@
             return $this;
         }
 
-        public function push($key, $value)
+        public function push($key, $value): self
         {
             if (!empty($value)) {
                 // $this->formData = array_merge_recursive($this->formData, $value);
@@ -565,7 +563,7 @@
          *
          * @return $this
          */
-        public function appendFiles($key, $file)
+        public function appendFiles($key, $file): self
         {
             if (file_exists(realpath($file))) {
                 $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -628,7 +626,7 @@
          *
          * @return $this
          */
-        public function set($option, $value)
+        public function set($option, $value): self
         {
             $this->$option = $value;
             // curl_setopt($this->getCurl(), $option, $value);
@@ -933,6 +931,9 @@
          */
         public function getResponseCode()
         {
+            if (intval($this->responseCode) == 0) {
+                $this->execute();
+            }
             return intval($this->responseCode);
         }
 
@@ -946,6 +947,9 @@
          */
         public function getResponseHeader(bool $complete = false)
         {
+            if ($this->getResponseCode() == 0) {
+                $this->execute();
+            }
             if (!empty($this->responseHeaderContent) && $complete) {
                 $header = explode("\r\n", $this->responseHeaderContent);
                 if ($header !== false) {
@@ -962,6 +966,9 @@
          */
         public function getResponseHeaderSize()
         {
+            if ($this->getResponseCode() == 0) {
+                $this->execute();
+            }
             return $this->responseHeaderSize;
         }
 
@@ -972,6 +979,9 @@
          */
         public function getInfo()
         {
+            if ($this->getResponseCode() == 0) {
+                $this->execute();
+            }
             return curl_getinfo($this->getCurl());
         }
 
@@ -999,6 +1009,9 @@
          */
         public function getError()
         {
+            if ($this->getResponseCode() == 0) {
+                $this->execute();
+            }
             return curl_error($this->getCurl());
         }
 
@@ -1052,7 +1065,7 @@
          * @param $value
          * @return $this
          */
-        public function __set(string $key, $value)
+        public function __set(string $key, $value): self
         {
             $this->$key = $value;
             return $this;
