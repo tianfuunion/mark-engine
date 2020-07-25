@@ -32,7 +32,6 @@
      */
     class Curl
     {
-
         /**@var static */
         private static $instance;
 
@@ -137,7 +136,7 @@
          *
          * @return $this
          */
-        private function get(string $url, $type = 'html')
+        public function get(string $url, $type = 'html')
         {
             $this->url = $url;
             $this->method = 'get';
@@ -191,7 +190,7 @@
          *
          * @return $this
          */
-        private function post(string $url, $data = array()): self
+        public function post(string $url, $data = array()): self
         {
             $this->url = $url;
             $this->method = 'post';
@@ -206,7 +205,7 @@
          *
          * @return $this
          */
-        private function upload(string $url): self
+        public function upload(string $url): self
         {
             $this->url = $url;
             $this->method = 'upload';
@@ -225,7 +224,7 @@
          *
          * @return $this|array
          */
-        private function download(string $url, $savePath = '', $fileName = '', $suffix = '')
+        public function download(string $url, $savePath = '', $fileName = '', $suffix = '')
         {
             $this->method = 'download';
             $this->content_type = 'application/octet-stream';
@@ -957,6 +956,7 @@
 
         /**
          * 关闭curl句柄
+         *
          */
         private function close()
         {
