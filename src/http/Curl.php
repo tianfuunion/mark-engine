@@ -50,6 +50,10 @@
         private $url; // 访问的url
         private $oriUrl; // referer url
         private $method = 'get'; // 访问方式,默认是GET请求
+        /**
+         * @link https://www.runoob.com/http/http-content-type.html
+         * @var string
+         */
         private $content_type = 'text/html';
         private $location = false; // 是否支持重定向
         private $maxredirs;
@@ -174,6 +178,20 @@
                     break;
                 case  'png':
                     $this->content_type = 'image/png';
+                    break;
+                case  'webp':
+                    $this->content_type = 'image/webp';
+                    break;
+
+                case  'mp3':
+                    $this->content_type = 'audio/mp3';
+                    break;
+                case  'wav':
+                    $this->content_type = 'audio/wav';
+                    break;
+
+                case  'mp4':
+                    $this->content_type = 'video/mpeg4';
                     break;
 
                 default:
