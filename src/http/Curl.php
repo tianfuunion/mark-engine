@@ -1,5 +1,4 @@
 <?php
-
     declare (strict_types=1);
 
     namespace mark\http;
@@ -33,6 +32,10 @@
      */
     class Curl
     {
+
+        /**@var static */
+        private static $instance;
+
         private $curl;
         private $transfer = true;
 
@@ -104,9 +107,6 @@
             return $this;
         }
 
-        /**@var static */
-        private static $instance;
-
         /**
          * 创建Facade实例。
          *
@@ -128,67 +128,6 @@
             }
 
             return self::$instance;
-        }
-
-        /**
-         * 始终创建新的对象实例
-         *
-         * @var bool
-         */
-        protected static $alwaysNewInstance;
-
-        /**
-         * 获取当前Facade对应类名
-         *
-         * @access protected
-         * @return string
-         */
-        protected static function getFacadeClass(): string
-        {
-            return 'mark\http\Curl';
-        }
-
-        /**
-         * 创建Facade实例
-         *
-         * @static
-         * @access protected
-         *
-         * @param bool $newInstance 是否每次创建新的实例
-         *
-         * @return object
-         */
-        protected static function createFacade(bool $newInstance = false)
-        {
-            $class = static::getFacadeClass() ?: 'mark\http\Curl';
-
-            if (static::$alwaysNewInstance) {
-                $newInstance = true;
-            }
-
-            if ($newInstance) {
-                return new $class();
-            }
-
-            if (!self::$instance) {
-                self::$instance = new $class();
-            }
-
-            return self::$instance;
-
-        }
-
-        /**
-         * 调用实际类的方法
-         *
-         * @param $method
-         * @param $params
-         *
-         * @return mixed
-         */
-        public static function __callStatic($method, $params)
-        {
-            return call_user_func_array($method, $params);
         }
 
         /**
@@ -853,17 +792,18 @@
                 // Log::info('Curl：ErrMsg：' . $this->errmsg);
 
                 return 'Curl Error：' . $this->errmsg;
-                // 检查是否有错误发生
             }
+
+            // 检查是否有错误发生
             if ($this->errno = curl_errno($this->getCurl())) {
                 $this->errmsg = curl_strerror($this->errno);
                 // Log::info('Curl：ErrNo：' . $this->errno . ' ErrMsg：' . $this->errmsg);
 
                 return 'Curl Error：' . curl_strerror($this->errno);
             }
-            if ($this->responseHeader) {
-                // 检查是否需要获取响应头
 
+            // 检查是否需要获取响应头
+            if ($this->responseHeader) {
                 // 获得响应结果里的：头大小
                 $this->responseHeaderSize = $headerSize = curl_getinfo($this->getCurl(), CURLINFO_HEADER_SIZE);
                 // 根据头大小去获取头信息内容
@@ -1059,4 +999,69 @@
             return $this;
         }
 
+        /**
+         * 始终创建新的对象实例
+         *
+         * @var bool
+         */
+        protected static $alwaysNewInstance;
+
+        /**
+         * 获取当前Facade对应类名
+         *
+         * @access protected
+         * @return string
+         */
+        protected static function getFacadeClass(): string
+        {
+            return 'mark\http\Curl';
+        }
+
+        /**
+         * 创建Facade实例
+         *
+         * @static
+         * @access protected
+         *
+         * @param bool $newInstance 是否每次创建新的实例
+         *
+         * @return object
+         */
+        protected static function createFacade(bool $newInstance = false)
+        {
+            $class = static::getFacadeClass() ?: 'mark\http\Curl';
+
+            if (static::$alwaysNewInstance) {
+                $newInstance = true;
+            }
+
+            if ($newInstance) {
+                return new $class();
+            }
+
+            if (!self::$instance) {
+                self::$instance = new $class();
+            }
+
+            return self::$instance;
+
+        }
+
+        /**
+         * 调用实际类的方法
+         *
+         * @param $method
+         * @param $params
+         *
+         * @return mixed
+         */
+        public static function __callStatic($method, $params)
+        {
+            try {
+                return call_user_func_array([static::createFacade(), $method], $params);
+            } catch (\Exception $e) {
+
+            }
+            return call_user_func_array($method, $params);
+        }
     }

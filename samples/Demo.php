@@ -9,6 +9,6 @@
         require_once __DIR__ . '/../vendor/autoload.php';
     }
 
-    is_empty();
+    is_empty('d');
 
-    isEmpty('d');
+
