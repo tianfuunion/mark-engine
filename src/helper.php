@@ -1,8 +1,6 @@
 <?php
     declare (strict_types=1);
 
-    use mark\filesystem\Explorer;
-
     if (!function_exists('p')) {
         /**
          * 输出各种类型的数据，调试程序时打印数据使用。
@@ -112,7 +110,7 @@
          * @param int $bytes 字节大小
          *
          * @return    string    转换后带单位的大小
-         * @link Explorer::toSize()
+         * @see  mark\filesystem\Explorer::toSize()
          */
         function toSize($bytes)
         {
@@ -900,7 +898,7 @@
                 return $css_content;
             }
 
-            Explorer::mkdir(pathinfo($savefile, PATHINFO_DIRNAME));
+            mark\filesystem\Explorer::mkdir(pathinfo($savefile, PATHINFO_DIRNAME));
 
             return @file_put_contents($savefile, $css_content);
         }

@@ -372,7 +372,8 @@
                 for ($i = 0, $iMax = count($name); $i < $iMax; $i++) {
                     //设置文件信息
                     if (
-                        $this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i]) && $this->checkFileSize($size[$i]) &&
+                        $this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i]) &&
+                        $this->checkFileSize($size[$i]) &&
                         $this->checkFileType($this->getFileType()) &&
                         $this->checkFileSuffix($this->getFileSuffix())) {
 
@@ -388,8 +389,10 @@
                 if ($return) {
                     $fileNames = array();   //存放所有上传后文件名的变量数组
                     for ($i = 0, $iMax = count($name); $i < $iMax; $i++) {
-                        if ($this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i])) {//设置文件信息
-                            $this->setNewFileName(); //设置新文件名
+                        //设置文件信息
+                        if ($this->setFiles($name[$i], $tmp_name[$i], $size[$i], $error[$i])) {
+                            //设置新文件名
+                            $this->setNewFileName();
                             $fileNames[] = $this->getNewFileName();
                         }
                     }
@@ -404,7 +407,8 @@
                     $this->checkFileSize($size) &&
                     $this->checkFileType($this->getFileType()) &&
                     $this->checkFileSuffix($this->getFileSuffix())) {
-                    $this->setFileName(); //设置新文件名
+                    //设置新文件名
+                    $this->setFileName();
                 } else {
                     $return = false;
                 }
@@ -565,7 +569,7 @@
          */
         public function __call($method, $args)
         {
-            $this->setError("Explorer::__call({$method})" . json_encode($args));
+            $this->setError("Explorer::__call({$method})" . json_encode($args, JSON_UNESCAPED_UNICODE));
 
             $key = strtolower(substr($method, 3));
 
@@ -698,12 +702,12 @@
             } else {
                 return false;
             }
-            /*
-                    // 文件上传失败，捕获错误代码
-                    if (!empty($this->info["error"])) {
-                        return false;
-                    }
-            */
+
+            // 文件上传失败，捕获错误代码
+            if (!empty($this->info["error"])) {
+                // return false;
+            }
+
             // 检测合法性
             if (!$this->is_uploaded($this->getTmpFileName())) {
                 $this->setError('upload illegal files ' . $this->getTmpFileName());
@@ -801,14 +805,11 @@
             }
 
             /* 检查图像文件 */
-
-            /*
             if (!$this->checkImg()) {
-                $this->error = "illegal image files";
-                $this->setError("illegal image files");
-                return false;
+                // $this->error = "illegal image files";
+                // $this->setError("illegal image files");
+                // return false;
             }
-            */
 
             return true;
         }
@@ -1129,7 +1130,7 @@
             $handle = @opendir($dirName);
             while (($file = @readdir($handle)) !== false) {
                 if ($file !== '.' && $file !== '..') {
-                    $dir = $dirName . '/' . $file;
+                    $dir = $dirName . DIRECTORY_SEPARATOR . $file;
                     if ($recursive) {
                         is_dir($dir) ? self::remove_dir($dir, $recursive) : self::unlink($dir);
                     } else {
@@ -1145,16 +1146,18 @@
         }
 
         /**
-         *
          * 清空文件夹函数和清空文件夹后删除空文件夹函数的处理 * 待测试
          *
          * @param string $path
          * @param bool $recursive
-         *
          * @return bool
          */
         public static function remove(string $path, $recursive = false)
         {
+            if (!empty($path)) {
+                $path = rtrim($path, '/');
+                $path = rtrim($path, '\\');
+            }
             //如果是目录则继续
             if (!is_dir($path)) {
                 return false;
@@ -1167,12 +1170,12 @@
                 //排除目录中的.和..
                 if ($val !== '.' && $val !== '..') {
                     //如果是目录则递归子目录，继续操作
-                    if (is_dir($path . $val)) {
+                    if (is_dir($path . DIRECTORY_SEPARATOR . $val)) {
                         if ($recursive) {
                             //子目录中操作删除文件夹和文件
-                            self::remove($path . $val . '/');
+                            self::remove($path . $val);
                             //目录清空后删除空文件夹
-                            @rmdir($path . $val . '/');
+                            @rmdir($path . DIRECTORY_SEPARATOR . $val);
                         }
                     } else {
                         //如果是文件直接删除
@@ -1191,12 +1194,11 @@
          *
          * @return string
          */
-        public function get_basename(string $file_path)
+        public function basename(string $file_path)
         {
             $file_path = self::dir_replace($file_path);
 
             return basename(str_replace("\\", '/', $file_path));
-            //return pathinfo($file_path,PATHINFO_BASENAME);
         }
 
         /**
@@ -1237,8 +1239,6 @@
             }
 
             if (!file_exists($new_path)) {
-                // $this->create_dir($new_path);
-                // self::create_dir($new_path);
                 self::mkdir($new_path);
             }
 
@@ -1286,7 +1286,7 @@
          */
         public function check_path(string $path)
         {
-            return (preg_match("/\/$/", $path)) ? $path : $path . '/';
+            return (preg_match("/\/$/", $path)) ? $path : $path . DIRECTORY_SEPARATOR;
         }
 
         /**
@@ -1373,7 +1373,8 @@
          */
         public function get_dir_info(string $dir)
         {
-            $handle = @opendir($dir);//打开指定目录
+            //打开指定目录
+            $handle = @opendir($dir);
             $directory_count = 0;
 
             $total_size = 0;
@@ -1382,7 +1383,7 @@
             while (false !== ($file_path = readdir($handle))) {
                 if ($file_path !== '.' && $file_path !== '..') {
                     //is_dir("$dir/$file_path") ? $sizeResult += $this->get_dir_size("$dir/$file_path") : $sizeResult += filesize("$dir/$file_path");
-                    $next_path = $dir . '/' . $file_path;
+                    $next_path = $dir . DIRECTORY_SEPARATOR . $file_path;
                     if (is_dir($next_path)) {
                         $directory_count++;
                         $result_value = self::get_dir_info($next_path);
@@ -1395,7 +1396,8 @@
                     }
                 }
             }
-            closedir($handle);//关闭指定目录
+            //关闭指定目录
+            closedir($handle);
             $result_value['size'] = $total_size;
             $result_value['filecount'] = $file_cout;
             $result_value['dircount'] = $directory_count;
@@ -1422,7 +1424,7 @@
                     if (strcmp($file, '.') == 0 || strcmp($file, '..') == 0) {
                         continue;
                     }
-                    $filepath = $dirname . '/' . $file;
+                    $filepath = $dirname . DIRECTORY_SEPARATOR . $file;
                     if (is_dir($filepath) && $is_all == TRUE) {
                         $files = $this->change_dir_files_code($filepath, $input_code, $out_code, $is_all, $exts);
                     } elseif ($this->get_ext($filepath) == $exts && is_file($filepath)) {
@@ -1514,7 +1516,7 @@
                     if (strcmp($file, '.') == 0 || strcmp($file, '..') == 0) {
                         continue;
                     }
-                    $filepath = $dirname . '/' . $file;
+                    $filepath = $dirname . DIRECTORY_SEPARATOR . $file;
 
                     switch ($exts) {
                         case '*':
@@ -1776,7 +1778,7 @@
                 $filename = time() . $ext;
             }
             if (0 !== strrpos($save_dir, '/')) {
-                $save_dir .= '/';
+                $save_dir .= DIRECTORY_SEPARATOR;
             }
             // 创建保存目录
             if (!file_exists($save_dir) && !mkdir($save_dir, 0777, true) && !is_dir($save_dir)) {
