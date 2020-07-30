@@ -367,16 +367,23 @@
 
     if (!function_exists('style')) {
         /**
-         * @param $style
-         * @param string $type
-         * @param null $path
+         * Env Style load for Thinkphp 6.0
+         *
+         * open         开源库
+         * private      私有库：第1方库
+         * project      项目库：第2方库
+         * protected    模块库：第2方库
+         * public       公共库：第3方库
+         *
+         * @param string $style
+         * @param string $type [public|project|protected|private]
+         * @param string $path
          * @param string $version
          */
-        function style($style, $type = 'private', $path = null, $version = "1.0")
+        function style(string $style, $type = 'private', $path = 'https://res.tianfu.pub/style', $version = "1.0")
         {
-            if ($style != '') {
+            if (!empty($style)) {
                 switch ($type) {
-                    case 'opensource':
                     case 'open': // 开源的，或来自网络的
                         $css = array('style' => $style, 'asset' => $path . DIRECTORY_SEPARATOR . $style . '.css', 'type' => $type, "version" => $version);
                         break;
@@ -402,14 +409,16 @@
                 } else {
                     $css_src = array($css);
                 }
-                app()->env->set('style', $css_src);
+                app()->env->set('style', $css_src = array_values(array_unique($css_src, SORT_REGULAR)));
             }
         }
     }
 
     if (!function_exists('script')) {
         /**
-         * opensource   开源库
+         * Env Script load for Thinkphp 6.0
+         *
+         * open         开源库
          * private      私有库：第1方库
          * project      项目库：第2方库
          * protected    模块库：第2方库
@@ -420,11 +429,10 @@
          * @param string $path
          * @param string $version
          */
-        function script($script = '', $type = 'private', $path = '', $version = "1.0")
+        function script($script = '', $type = 'private', $path = 'https://res.tianfu.pub/script', $version = "1.0")
         {
-            if ($script != '') {
+            if (!empty($script)) {
                 switch ($type) {
-                    case 'opensource':
                     case 'open': // 开源的，或来自网络的
                         $js = array('script' => $script, 'asset' => $path . DIRECTORY_SEPARATOR . $script . '.js', 'type' => $type, "version" => $version);
                         break;
@@ -452,7 +460,7 @@
                 } else {
                     $js_src = array($js);
                 }
-                app()->env->set('script', $js_src);
+                app()->env->set('script', $css_src = array_values(array_unique($js_src, SORT_REGULAR)));
             }
         }
     }
