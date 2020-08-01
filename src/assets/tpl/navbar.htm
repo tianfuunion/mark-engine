@@ -1,45 +1,54 @@
 <!--  底部导航  -->
-<nav class="weui-tabbar tabbar navbar fixed-bottom container" data-role="navbar" >
+<nav class="weui-tabbar tabbar navbar fixed-bottom container" data-role="navbar">
 
-	<a class="tab-item active hide weui-tabbar__item weui-bar__item--on" name="index" href="<{$Think.config.app.host}>">
-		<svg class="weui-tabbar__icon foot-menu-home icon" aria-hidden="true"><use xlink:href="#icon-chat"></use></svg>
-		<span class="weui-tabbar__label tab-label">首页</span>
-	</a>
+    <a class="tab-item active hide weui-tabbar__item weui-bar__item--on" name="index" href="<{$Think.config.app.host}>">
+        <svg class="weui-tabbar__icon foot-menu-home icon" aria-hidden="true">
+            <use xlink:href="#icon-chat"></use>
+        </svg>
+        <span class="weui-tabbar__label tab-label">首页</span>
+    </a>
 
-	<a name="index" id="navHome" class="weui-tabbar__item tab-item active" href="<{$Think.config.app.market.host}>market.php">
-		<svg class="weui-tabbar__icon foot-menu-home icon" aria-hidden="true"><use xlink:href="#icon-chat"></use></svg>
-		<p class="weui-tabbar__label tab-label">商城</p>
-	</a>
+    <a name="index" id="navHome" class="weui-tabbar__item tab-item active" href="<{$Think.config.app.market.host}>market.php">
+        <svg class="weui-tabbar__icon foot-menu-home icon" aria-hidden="true">
+            <use xlink:href="#icon-chat"></use>
+        </svg>
+        <p class="weui-tabbar__label tab-label">商城</p>
+    </a>
 
-	<a name="shop" id="navType" class="weui-tabbar__item tab-item" href="<{$Think.config.app.market.host}>market.php/classify">
-		<svg class="weui-tabbar__icon foot-menu-list icon" aria-hidden="true"><use xlink:href="#icon-shop"></use></svg>
-		<p class="weui-tabbar__label tab-label">分类</p>
-	</a>
+    <a name="shop" id="navType" class="weui-tabbar__item tab-item" href="<{$Think.config.app.market.host}>market.php/classify">
+        <svg class="weui-tabbar__icon foot-menu-list icon" aria-hidden="true">
+            <use xlink:href="#icon-shop"></use>
+        </svg>
+        <p class="weui-tabbar__label tab-label">分类</p>
+    </a>
 
-	<a name="cart" id="navCart" class="weui-tabbar__item tab-item" href="<{$Think.config.app.market.host}>market.php/cart/index/uid/<{$user.uid}>">
-		<span id="cartNum" class="mui-icon-extra mui-icon-extra-cart mui-icon" style="position: absolute;top: -.3em;right: 1em;"></span>
-		<svg class="weui-tabbar__icon foot-menu-cart  icon" aria-hidden="true"><use xlink:href="#icon-cart"></use></svg>
-		<p class="weui-tabbar__label tab-label">购物车</p>
-	</a>
+    <a name="cart" id="navCart" class="weui-tabbar__item tab-item"
+       href="<{$Think.config.app.market.host}>market.php/cart/index/uid/<{$user.uid}>">
+        <span id="cartNum" class="mui-icon-extra mui-icon-extra-cart mui-icon" style="position: absolute;top: -.3em;right: 1em;"></span>
+        <svg class="weui-tabbar__icon foot-menu-cart  icon" aria-hidden="true">
+            <use xlink:href="#icon-cart"></use>
+        </svg>
+        <p class="weui-tabbar__label tab-label">购物车</p>
+    </a>
 
-	<a name="member" id="navUser" class="weui-tabbar__item tab-item weui-bar__item--on" href="/account.php/member/index">
-		<svg class="weui-tabbar__icon foot-menu-member  icon" aria-hidden="true"><use xlink:href="#icon-avatar"></use></svg>
-		<p class="tab-label weui-tabbar__label">我的</p>
-	</a>
+    <a name="member" id="navUser" class="weui-tabbar__item tab-item weui-bar__item--on" href="/account.php/member/index">
+        <svg class="weui-tabbar__icon foot-menu-member  icon" aria-hidden="true">
+            <use xlink:href="#icon-avatar"></use>
+        </svg>
+        <p class="tab-label weui-tabbar__label">我的</p>
+    </a>
 
 </nav>
 
 <script type="text/javascript">
-$(document).ready(function() {
-/**
- * 当前页面标记获取有失误，
- */
-	$("nav.tabbar a").on("click",function(){
-		$(this).siblings().removeClass("active");
-		$(this).addClass("active");
-	});
+    $(document).ready(function () {
+        /**
+         * 当前页面标记获取有失误，
+         */
+        $("nav.tabbar a").on("click", function () {
+            $(this).siblings().removeClass("active");
+            $(this).addClass("active");
+        });
 
-//	$("nav.tabbar a").siblings().removeClass("active");
-//	$('nav.tabbar a[name="<{$Request.controller}>"]').addClass("active");
-});
+    });
 </script>

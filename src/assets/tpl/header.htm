@@ -131,8 +131,8 @@
     <!-- 添加 RSS 订阅 -->
     <!-- <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml"> -->
     <!-- 添加 favicon icon -->
-    <link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico">
-    <script type="text/javascript" charset="utf-8" src="//open.tianfu.ink/libs/jquery/script/jquery-2.2.4.min.js?v=2.2.4"></script>
+    <link rel="Shortcut Icon" type="image/x-icon" href="https://res.tianfu.pub/favicon.ico">
+    <script type="text/javascript" charset="utf-8" src="https://res.tianfu.pub/jquery/script/jquery-2.2.4.min.js?v=2.2.4"></script>
 
     <{if $Request.env.APP_DEBUG and $Request.session.system.debug eq 1}>
     <{volist name="$Request.env.style" id="css"}>
@@ -160,7 +160,7 @@
         (function () {
             let ma = document.createElement("script");
             ma.defer = "defer";
-            ma.src = "//open.tianfu.ink/libs/analytics/script/mark.analytics.min.js?v=1.0.0";
+            ma.src = "https://res.tianfu.pub/analytics/script/mark.analytics.min.js?v=1.0.0";
             let s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(ma, s);
         })();
