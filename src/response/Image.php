@@ -1,5 +1,4 @@
 <?php
-
     declare (strict_types=1);
 
     namespace mark\response;
@@ -7,7 +6,6 @@
     use think\Cookie;
     use think\Request;
     use think\Response;
-    use think\Exception;
     use Imagick;
 
     /**
@@ -15,7 +13,6 @@
      */
     class Image extends Response
     {
-
         protected $expire = 360;
         protected $mimeType;
 
@@ -46,7 +43,7 @@
         {
 
             if ($data == '' || $data == null || empty($data)) {
-                throw new Exception('file not exists:' . $data);
+                throw new \Exception('file not exists:' . $data);
             }
 
             ob_end_clean();
@@ -81,7 +78,6 @@
         public function isContent(bool $content = true)
         {
             $this->isContent = $content;
-
             return $this;
         }
 
@@ -97,7 +93,6 @@
         public function expire(int $expire)
         {
             $this->expire = $expire;
-
             return $this;
         }
 
@@ -113,7 +108,6 @@
         public function setMimeType(string $mimeType)
         {
             $this->mimeType = $mimeType;
-
             return $this;
         }
 
@@ -128,10 +122,10 @@
             if (!empty($this->mimeType)) {
                 return $this->mimeType;
             }
+
             if ($imagick !== null && $imagick instanceof Imagick) {
                 return $imagick->getImageMimeType();
             }
-
             return 'image/jpg';
         }
 
@@ -140,7 +134,6 @@
             if ($imagick != null && !empty($imagick) && $imagick instanceof Imagick) {
                 return $imagick->getImageLength();
             }
-
             return 0;
         }
 

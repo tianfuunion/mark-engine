@@ -3,22 +3,22 @@
 
     namespace mark\request;
 
-    use think\file\UploadedFile;
-    use think\route\Rule;
     use think\facade\App;
-    use think\facade\Session;
     use think\facade\Env;
+    use think\facade\Session;
+    use think\route\Rule;
+    use think\file\UploadedFile;
     use Exception;
     use InvalidArgumentException;
 
     /**
      * 请求管理类
      *
-     * @package think
+     * Class Request
+     * @package mark\request
      */
     class Request
     {
-
         /**
          * 兼容PATH_INFO获取
          *
@@ -2023,8 +2023,7 @@
          */
         public static function fragment(string $url = '')
         {
-            // return strtolower(parse_url(!empty($url) ? $url : strval(self::url(true)), PHP_URL_FRAGMENT));
-            return strtolower(parse_url(!empty($url) ? $url : strval(Request::url(true)), PHP_URL_FRAGMENT));
+            return strtolower(parse_url(!empty($url) ? $url : strval(self::url(true)), PHP_URL_FRAGMENT));
         }
 
         /**

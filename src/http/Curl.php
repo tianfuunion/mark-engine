@@ -5,8 +5,8 @@
 
     use finfo;
     use Exception;
-    use mark\http\response\HttpResponse;
     use mark\system\Os;
+    use mark\http\response\HttpResponse;
 
     /**
      * Curl for php 封装类
@@ -51,7 +51,6 @@
         private $cache_control = 'no-cache';
         private $pragma = 'no-cache';
         private $charset = 'utf-8';
-
 
         /**
          * 是否支持重定向(默认不支持)
@@ -209,7 +208,6 @@
                     $this->content_type = 'application/x-www-data-urlencode';
                     break;
             }
-
             return $this->initialize();
         }
 
@@ -916,7 +914,7 @@
         {
             return array(
                 'Content-type: ' . $this->content_type . ';charset=' . $this->charset . ';',
-                'Accept: ' . $_SERVER['HTTP_ACCEPT'],
+                'Accept: ' . Os::getAccept(),
                 'Cache-Control: ' . $this->cache_control,
                 'Pragma: ' . $this->pragma,
             );
@@ -1176,7 +1174,6 @@
             try {
                 return call_user_func_array([self::createFacade(), $method], $params);
             } catch (\Exception $e) {
-
             }
             return call_user_func_array($method, $params);
         }

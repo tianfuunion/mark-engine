@@ -1,12 +1,11 @@
 <?php
-
     declare (strict_types=1);
 
     namespace mark\system;
 
     use Exception;
 
-    /**+==============================
+    /**+==================================================
      * |  名称：MarkEngine
      * +--------------------------------------------------
      * |  文件：Operating System php
@@ -21,13 +20,12 @@
      * +--------------------------------------------------
      * |  创建时间: 2018-12-12
      * +--------------------------------------------------
-     * |  修改时间: 2018-12-12
+     * |  修改时间: 2020-08-05 10:24:00
      * +--------------------------------------------------
      *
      * Class Os
-     *
      * @package mark\system
-     **==============================**/
+     **+==================================================*/
     final class Os
     {
 
@@ -39,19 +37,31 @@
         /**
          * 获取HTTP代理
          *
+         * /**
          * @return string
          */
         public static function getAgent()
         {
             if (isset($_SERVER['HTTP_USER_AGENT']) && !empty($_SERVER['HTTP_USER_AGENT']) && $_SERVER['HTTP_USER_AGENT'] != '') {
-                $agent = $_SERVER['HTTP_USER_AGENT'];
-            } elseif (isset($_SERVER['HTTP_X_UCBROWSER_UA']) && !empty($_SERVER['HTTP_X_UCBROWSER_UA']) && $_SERVER['HTTP_X_UCBROWSER_UA'] != '') {
-                $agent = $_SERVER['HTTP_X_UCBROWSER_UA'];
-            } else {
-                $agent = '';
+                return strtolower($_SERVER['HTTP_USER_AGENT']);
+            }
+            if (isset($_SERVER['HTTP_X_UCBROWSER_UA']) && !empty($_SERVER['HTTP_X_UCBROWSER_UA']) && $_SERVER['HTTP_X_UCBROWSER_UA'] != '') {
+                return strtolower($_SERVER['HTTP_X_UCBROWSER_UA']);
             }
 
-            return strtolower($agent);
+            return '';
+        }
+
+        /**
+         * HTTP请求头
+         * @return string
+         */
+        public static function getAccept()
+        {
+            if (isset($_SERVER['HTTP_ACCEPT']) && !empty($_SERVER['HTTP_ACCEPT'])) {
+                return strtolower($_SERVER['HTTP_ACCEPT']);
+            }
+            return '';
         }
 
         /**
@@ -69,12 +79,13 @@
          *
          * @param $flag
          * @return array|string
+         * @example os|version|string|array
          */
         public static function getOs($flag = '')
         {
             $agent = strtolower(self::getAgent());
             try {
-                if (isset($_SERVER['HTTP_X_UCBROWSER_UA'])) {
+                if (isset($_SERVER['HTTP_X_UCBROWSER_UA']) && !empty($_SERVER['HTTP_X_UCBROWSER_UA'])) {
                     //获取UC用户代理字符串
                     $vers = explode(';', $_SERVER['HTTP_X_UCBROWSER_UA']);
                     $os = trim($vers[2], "\ov( | )");
@@ -215,6 +226,7 @@
          *
          * @param string $flag
          * @return array|string
+         * @example brand|model|string|array;
          */
         public static function getBrand($flag = '')
         {
@@ -222,7 +234,7 @@
             $brand = self::isMobile() ? '手机' : '计算机';
             $model = '';
             try {
-                if (isset($_SERVER['HTTP_X_UCBROWSER_UA'])) {
+                if (isset($_SERVER['HTTP_X_UCBROWSER_UA']) && !empty($_SERVER['HTTP_X_UCBROWSER_UA'])) {
                     $vers = explode(';', $_SERVER['HTTP_X_UCBROWSER_UA']);
                     $model = trim($vers[0], "\dv(|)");//品牌
                 } elseif (stripos($agent, 'iphone')) {
@@ -576,13 +588,15 @@
          */
         public static function isMobile(): bool
         {
-            if (isset($_SERVER['HTTP_VIA']) && stristr($_SERVER['HTTP_VIA'], "wap")) {
+            if (isset($_SERVER['HTTP_VIA']) && !empty($_SERVER['HTTP_VIA']) && stristr($_SERVER['HTTP_VIA'], "wap")) {
                 return true;
-            } elseif (isset($_SERVER['HTTP_ACCEPT']) && strpos(strtoupper($_SERVER['HTTP_ACCEPT']), "VND.WAP.WML")) {
+            } elseif (isset($_SERVER['HTTP_ACCEPT']) && !empty($_SERVER['HTTP_ACCEPT']) && strpos(strtoupper($_SERVER['HTTP_ACCEPT']), "VND.WAP.WML")) {
                 return true;
-            } elseif (isset($_SERVER['HTTP_X_WAP_PROFILE']) || isset($_SERVER['HTTP_PROFILE'])) {
+            } elseif (isset($_SERVER['HTTP_X_WAP_PROFILE']) && !empty($_SERVER['HTTP_X_WAP_PROFILE'])) {
                 return true;
-            } elseif (isset($_SERVER['HTTP_USER_AGENT']) && preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $_SERVER['HTTP_USER_AGENT'])) {
+            } elseif (isset($_SERVER['HTTP_PROFILE']) && !empty($_SERVER['HTTP_PROFILE'])) {
+                return true;
+            } elseif (isset($_SERVER['HTTP_USER_AGENT']) && !empty($_SERVER['HTTP_USER_AGENT']) && preg_match('/(blackberry|configuration\/cldc|hp |hp-|htc |htc_|htc-|iemobile|kindle|midp|mmp|motorola|mobile|nokia|opera mini|opera |Googlebot-Mobile|YahooSeeker\/M1A1-R2D2|android|iphone|ipod|mobi|palm|palmos|pocket|portalmmm|ppc;|smartphone|sonyericsson|sqh|spv|symbian|treo|up.browser|up.link|vodafone|windows ce|xda |xda_)/i', $_SERVER['HTTP_USER_AGENT'])) {
                 return true;
             }
 
@@ -722,7 +736,7 @@
                 $ip = getenv('HTTP_X_FORWARDED_FOR');
             } elseif (getenv('REMOTE_ADDR') && strcasecmp(getenv('REMOTE_ADDR'), '')) {
                 $ip = getenv('REMOTE_ADDR');
-            } elseif (isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] && strcasecmp($_SERVER['REMOTE_ADDR'], '')) {
+            } elseif (isset($_SERVER['REMOTE_ADDR']) && !empty($_SERVER['REMOTE_ADDR']) && strcasecmp($_SERVER['REMOTE_ADDR'], '')) {
                 $ip = $_SERVER['REMOTE_ADDR'];
             } else {
                 $ip = '';
