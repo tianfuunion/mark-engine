@@ -3,10 +3,10 @@
 
     namespace mark\response;
 
+    use Imagick;
     use think\Cookie;
     use think\Request;
     use think\Response;
-    use Imagick;
 
     /**
      * Jsonp Response
@@ -41,9 +41,8 @@
          */
         protected function output($data)
         {
-
             if ($data == '' || $data == null || empty($data)) {
-                throw new \Exception('file not exists:' . $data);
+                // throw new \Exception('file not exists:' . $data);
             }
 
             ob_end_clean();
@@ -69,8 +68,6 @@
         /**
          * 设置是否为内容 必须配合mimeType方法使用
          *
-         * @access public
-         *
          * @param bool $content
          *
          * @return $this
@@ -83,8 +80,6 @@
 
         /**
          * 设置有效期
-         *
-         * @access public
          *
          * @param integer $expire 有效期
          *
@@ -99,8 +94,6 @@
         /**
          * 设置文件类型
          *
-         * @access public
-         *
          * @param string $mimeType
          *
          * @return $this
@@ -114,10 +107,10 @@
         /**
          * 获取文件类型信息
          *
-         * @param Imagick $imagick
+         * @param $imagick
          * @return string
          */
-        protected function getMimeType(Imagick $imagick): string
+        protected function getMimeType($imagick): string
         {
             if (!empty($this->mimeType)) {
                 return $this->mimeType;
@@ -129,6 +122,11 @@
             return 'image/jpg';
         }
 
+        /**
+         * 获取图片大小
+         * @param $imagick
+         * @return int
+         */
         protected function getImageLength($imagick)
         {
             if ($imagick != null && !empty($imagick) && $imagick instanceof Imagick) {

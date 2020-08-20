@@ -26,31 +26,31 @@
      * |  修改时间: 2019-11-05
      * +--------------------------------------------------
      **
-     * 注意：方法中的文件路径有待测试
+     * @note 注意：方法中的文件路径有待测试
      *
-     * @version 1.0
-     * @time    2019-06-12 17:16:00
-     * @TODO    ：1、资源的输出，echo 改为 return后图片不显示 \n ：2、mysql title为中文后，name查询到的结果不显示后缀
-     **==============================
+     * @version 2.0
+     * @time    2020-08-20 21:26:00
+     *
+     * @todo    ：1、资源的输出，echo 改为 return后图片不显示 \n ：2、mysql title为中文后，name查询到的结果不显示后缀
+     *
      * Class ImageProcessor
      *
      * @package mark\image
      */
     class ImageProcessor
     {
-        private $maxsize;    //限制文件上传大小，单位是字节,可以使用set()设置
+        private $maxSize;               // 限制文件上传大小，单位是字节,可以使用set()设置
+        private $isRandName = true;     // 设置是否随机重命名 false为不随机,可以使用set()设置
+        private $thumb = array();       // 设置缩放图片,可以使用set()设置
+        private $waterMark = array();   // 设置为图片加水印,可以使用set()设置
+        private $originName;            // 源文件名
+        private $tmpFileName;           // 临时文件名
+        private $fileType;              // 文件类型(文件后缀)
+        private $fileSize;              // 文件大小
+        private $newFileName;           // 新文件名
 
-        private $israndname = true;    //设置是否随机重命名 false为不随机,可以使用set()设置
-        private $thumb = array();        //设置缩放图片,可以使用set()设置
-        private $watermark = array();    //设置为图片加水印,可以使用set()设置
-        private $originName;        //源文件名
-        private $tmpFileName;        //临时文件名
-        private $fileType;            //文件类型(文件后缀)
-        private $fileSize;            //文件大小
-        private $newFileName;        //新文件名
-
-        private $errorNum = 0;        //错误号
-        private $errorMess = '';        //错误报告消息
+        private $errorNum = 0;          // 错误号
+        private $errorMsg = '';         // 错误报告消息
 
         private $storage_path;
         private $bucket_path;
@@ -61,53 +61,48 @@
         private $temp_path;
         private $file_path;
         private $cache_path;
-        /**@var Imagick */
-        private $image;
-        private $type;
 
+        private $processor; // 图片处理规则 * 请求参数
+
+        /**@var Imagick */
+        private $pallete;
+
+        private $type;
         private $fileinfo; // 文件信息，文件名，后缀
-        private $param; //请求参数
-        // private $processor; // 图片处理规则
 
         private $logcat;
 
         /**
          * ImageProcessor constructor.
-         *
-         * @param null $param
          * @param string $path
+         * @param array $processor
          */
-        public function __construct($param = null, string $path)
+        public function __construct(string $path, $processor = array())
         {
-            if ($param != null) {
-                $this->param = $param;
+            if ($processor != null) {
+                $this->processor = $processor;
             } else {
                 $this->logcat("debug", 'ImageProcessor::__construct(param is Null)');
             }
 
-            /*
-                if($processor != null){
-                    $this->processor = $processor;
-                }
-            */
-
             if ($path && Explorer::isdir($path)) {
-                $this->storage_path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;    // TODO：处理需要处理路径分割符问题
+                // TODO：处理需要处理路径分割符问题
+                $this->storage_path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
                 $this->bucket_path = $this->storage_path . 'bucket' . DIRECTORY_SEPARATOR;
                 $this->images_path = $this->storage_path . 'images' . DIRECTORY_SEPARATOR;
                 $this->thumbs_path = $this->storage_path . 'thumbs' . DIRECTORY_SEPARATOR;
 
                 // $this->video_path	= $this->storage_path . "/video/";
-                $this->temp_path = $this->storage_path . 'temp' . DIRECTORY_SEPARATOR;
+                // $this->temp_path = $this->storage_path . 'temp' . DIRECTORY_SEPARATOR;
                 // $this->file_path	= $this->storage_path . "/file/";
-                $this->cache_path = $this->storage_path . 'cache' . DIRECTORY_SEPARATOR;
+                // $this->cache_path = $this->storage_path . 'cache' . DIRECTORY_SEPARATOR;
 
                 Explorer::isdir($this->storage_path);
                 Explorer::isdir($this->bucket_path);
                 Explorer::isdir($this->images_path);
                 Explorer::isdir($this->thumbs_path);
-                Explorer::isdir($this->temp_path);
-                Explorer::isdir($this->cache_path);
+                // Explorer::isdir($this->temp_path);
+                // Explorer::isdir($this->cache_path);
                 // $this->isDirectory($this->file_path);
                 // $this->isDirectory($this->video_path);
             } else {
@@ -117,24 +112,21 @@
 
         /**
          * 析构函数 * 销毁图像资源
-         *
          */
         public function __destruct()
         {
-            if ($this->image !== null) {
-                $this->image->clear();
-                $this->image->destroy();
+            if ($this->pallete != null) {
+                $this->pallete->clear();
+                $this->pallete->destroy();
             }
         }
 
         /**
          * 用于设置成员属性（$path, $allowtype,$maxsize, $israndname, $thumb,$watermark）
          * 可以通过连贯操作一次设置多个属性值
-         *
-         * @param string $key 成员属性名(不区分大小写)
-         * @param mixed $val 为成员属性设置的值
-         *
-         * @return    object        返回自己对象$this
+         * @param $key
+         * @param $val
+         * @return $this
          */
         public function set($key, $val)
         {
@@ -150,10 +142,12 @@
          *
          * @param $key
          * @param $val
+         * @return $this
          */
         private function setOption($key, $val)
         {
             $this->$key = $val;
+            return $this;
         }
 
         /**
@@ -255,24 +249,16 @@
         /**
          * 获取源文件
          * TODO：文件信息与规则信息可分开或者再完善一下，（文件路径）
-         * Array
-         * (
-         * [dirname] => /testweb
-         * [basename] => test.txt
-         * [extension] => txt
-         * )
          *
          * @return bool|string
          */
         private function getSourceFile()
         {
-            // $sourceFile = $this->images_path . $this->param["object"];
-            $sourceFile = $this->param['path'] . $this->param['object'];
+            $sourceFile = $this->storage_path . DIRECTORY_SEPARATOR . $this->processor['path'] . $this->processor['object'];
             header('X-Coss-Source: ' . $sourceFile);
             if (is_file($sourceFile) && file_exists(dirname($sourceFile))) {
                 return $sourceFile;
             }
-
             return false;
         }
 
@@ -303,7 +289,7 @@
          */
         private function getThumbFilePath()
         {
-            return $this->thumbs_path . $this->joinParam($this->param);
+            return $this->thumbs_path . $this->joinParam($this->processor);
         }
 
         /**
@@ -315,70 +301,47 @@
          */
         private function isExpires()
         {
-            header('X-expires:' . $this->param['expires']);
+            header('X-expires:' . $this->processor['expires']);
 
-            return $this->param['expires'] != 0 && (time() - filemtime($this->getThumbFile())) > $this->param['expires'];
+            return $this->processor['expires'] != 0 && (time() - filemtime($this->getThumbFile())) > $this->processor['expires'];
         }
 
         /**
          * 获取对象文件
          *
-         * @param string $outtype { "stream", "filepath" }
-         *
+         * @return Imagick
          * @throws \ImagickException
          */
-        public function getImage($outtype = 'stream')
+        public function getImagick()
         {
-            $startTime = microtime(true);
-
             header('X-method:get');
-            if (strtolower($this->param['format']) === 'jpg') {
-                $this->param['format'] = 'jpeg';
+            if (strtolower($this->processor['format']) === 'jpg') {
+                $this->processor['format'] = 'jpeg';
             }
 
-            $this->Logcat('info', "ImageProcessor::getImage()" . json_encode($this->param));
-
-            $sourceFile = $this->getSourceFile();
+            $this->Logcat('info', "ImageProcessor::getImage()" . json_encode($this->processor, JSON_UNESCAPED_UNICODE));
 
             // 检测是否有已经生成的图片，有则直接返回
-            if (!$this->param['process'] === 'source' && $thumbFile = $this->getThumbFile()) {
-                if ($thumbFile !== false && $this->isExpires() == false) {
-                    if ($outtype === 'stream') {
-                        $this->image = $pallete = new Imagick($thumbFile); // new一个新的画布对象
-                        echo $pallete;
-                    } else {
-                        echo $thumbFile;
-                    }
-                    exit(1);
-                }
-            } elseif ($sourceFile) {
-
-            } else {
-                $data["param"] = $this->param;
-
-                $data["get"] = $_GET;
-                $data["post"] = $_POST;
-                $data["file"] = $_FILES;
-                $data["server"] = $_SERVER;
-                $data["session"] = $_SESSION;
-                $data["request"] = $_REQUEST;
-                $data["cookie"] = $_COOKIE;
-                // $data["rawdata"]= $HTTP_RAW_POST_DATA;
-                $data["head"] = getallheaders();
-
-                // Log::info("Bucket::GET(410)" . json_encode($data));
-
-                header("Status: 410 Invalid request file " . $this->param["object"]);
-                header("X-status: 410 Invalid request file " . $this->param["object"]);
-                header("X-object: " . $this->param["object"]);
-                echo new Imagick($this->images_path . "default.jpg");
-                exit(1);
+            $thumbFile = $this->getThumbFile();
+            if ($this->processor['process'] !== 'source' && $thumbFile !== false && $this->isExpires() == false) {
+                $this->pallete = new Imagick($thumbFile); // new一个新的画布对象
+                echo $this->pallete;
+                return $this->pallete;
             }
 
-            // $this->image = $pallete = new Imagick(realpath($sourceFile)) ; // new一个新的画布对象
-            $this->image = $pallete = new Imagick($sourceFile); // new一个新的画布对象
-            // $pallete->newimage($this->param["width"], $this->param["height"], "transparent"); // 创建画布
-            // $pallete->newimage($this->param["width"], $this->param["height"]); // 创建画布(可显示图片，但为原图片尺寸)
+            $sourceFile = $this->getSourceFile();
+            if ($sourceFile == false) {
+                header("Status: 410 Invalid request file " . $this->processor["object"]);
+                header("X-status: 410 Invalid request file " . $this->processor["object"]);
+                header("X-object: " . $this->processor["object"]);
+                $this->pallete = new Imagick($this->images_path . "default.jpg");
+                echo $this->pallete;
+                return $this->pallete;
+            }
+
+            $this->pallete = new Imagick($sourceFile); // new一个新的画布对象
+            // $pallete->newimage($this->processor["width"], $this->processor["height"], "transparent"); // 创建画布
+            // $pallete->newimage($this->processor["width"], $this->processor["height"]); // 创建画布(可显示图片，但为原图片尺寸)
             // $pallete->drawImage($this->getSourceFile());
 
             /**
@@ -386,133 +349,123 @@
              */
             list($dst_w, $dst_h) = getimagesize($sourceFile); // 获取原图尺寸
 
-            $resize = $this->param['resize'];
+            $resize = $this->processor['resize'];
             header('X-coss-type: ' . gettype($resize));
+
+            $width = (int)$this->processor["width"] ?? 0;
+            $height = (int)$this->processor["height"] ?? 0;
             switch ($resize) {
                 case 'zoom': // 等比缩放
-                    if (isset($this->param['scale'])) {
-                        // $pallete->thumbnailImage($dst_w * intval($this->param["scale"]) / 100, $dst_h * intval($this->param["scale"]) / 100);
-                        $w = $dst_w * (int)$this->param['scale'] / 100;
-                        $h = $dst_h * (int)$this->param['scale'] / 100;
+                    if (isset($this->processor['scale'])) {
+                        $w = $dst_w * (int)$this->processor['scale'] / 100;
+                        $h = $dst_h * (int)$this->processor['scale'] / 100;
 
-                        $pallete->thumbnailImage($w, $h);
+                        $this->pallete->thumbnailImage($w, $h);
                         header('X-coss-size: ' . $w . ' ' . $h);
                     } else {
-                        $pallete->thumbnailImage($dst_w, $dst_h);
+                        $this->pallete->thumbnailImage($dst_w, $dst_h);
                     }
                     break;
 
                 case 'wfit': //宽度固定，高度自适应
-                    if (isset($this->param['width'])) {
-                        $width = (int)$this->param["width"];
+                    if (isset($this->processor['width'])) {
                         $scale = $width / $dst_w;
-                        $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                        $this->pallete->thumbnailImage($width, intval($dst_h * $scale), true, true);
                     } else {
                         // 0、没有给出宽高值
-                        $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                        $this->pallete->thumbnailImage((int)$dst_w, (int)$dst_h, true, true);
                     }
                     break;
                 case 'hfit': // 高度固定，宽度自适应
-                    if (isset($this->param['height'])) {
-                        $height = (int)$this->param["height"];
+                    if (isset($this->processor['height'])) {
                         $scale = $height / $dst_h;
-                        $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                        $this->pallete->thumbnailImage(intval($dst_w * $scale), $height, true, true);
                     } else {
                         // 0、没有给出宽高值
-                        $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                        $this->pallete->thumbnailImage((int)$dst_w, (int)$dst_h, true, true);
                     }
                     break;
                 case 'lfit':// 3、固定宽高，按长边缩放：resize,m_lfit,w_200,h_200
-                    if (isset($this->param['width'], $this->param['height'])) {
-                        $width = (int)$this->param["width"];
-                        $height = (int)$this->param["height"];
+                    if (isset($this->processor['width'], $this->processor['height'])) {
                         if ($width >= $height) {
                             // 宽图
                             $scale = $width / $dst_w;
-                            //		$pallete->thumbnailImage($width, $dst_h * $scale, true, true);
-                            $pallete->thumbnailImage($width, $dst_h * $scale);
+                            // $pallete->thumbnailImage($width, $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage((int)$width, (int)$dst_h * (int)$scale);
                         } else {
                             // 高图
                             $scale = $height / $dst_h;
-                            $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                            $this->pallete->thumbnailImage(intval($dst_w * $scale), (int)$this->processor['height'], true, true);
                         }
                     } else {
-                        if (isset($this->param['width'])) {
-                            $width = (int)$this->param['width'];
+                        if (isset($this->processor['width'])) {
                             // 1、宽度固定，高度自适应：resize,m_lfit,w_200
                             $scale = $width / $dst_w;
-                            $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage($width, intval($dst_h * $scale), true, true);
                         } else {
-                            if (isset($this->param['height'])) {
-                                $height = (int)$this->param['height'];
+                            if (isset($this->processor['height'])) {
                                 //	2、高度固定，宽度自适应：resize,m_lfit,h_200
                                 $scale = $height / $dst_h;
-                                $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                                $this->pallete->thumbnailImage(intval($dst_w * $scale), $height, true, true);
                             } else {
                                 // 0、没有给出宽高值
-                                $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                                $this->pallete->thumbnailImage((int)$dst_w, (int)$dst_h, true, true);
                             }
                         }
                     }
                     break;
                 case 'mfit': // 4、固定宽高，按短边缩放：resize,m_mfit,w_200,h_200
-                    $width = (int)$this->param["width"];
-                    $height = (int)$this->param["height"];
-                    if (isset($this->param['width'], $this->param['height'])) {
+                    if (isset($this->processor['width'], $this->processor['height'])) {
                         if ($width <= $height) {
                             // 宽图
                             $scale = $width / $dst_w;
-                            $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage($width, intval($dst_h * $scale), true, true);
                         } else {
                             // 高图
                             $scale = $height / $dst_h;
-                            $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                            $this->pallete->thumbnailImage(intval($dst_w * $scale), $height, true, true);
                         }
                     } else {
-                        if (isset($this->param['width'])) {
+                        if (isset($this->processor['width'])) {
                             // 1、宽度固定，高度自适应：resize,m_lfit,w_200
                             $scale = $width / $dst_w;
-                            $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage($width, $dst_h * $scale, true, true);
                         } else {
-                            if (isset($this->param['height'])) {
+                            if (isset($this->processor['height'])) {
                                 //	2、高度固定，宽度自适应：resize,m_lfit,h_200
                                 $scale = $height / $dst_h;
-                                $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                                $this->pallete->thumbnailImage($dst_w * $scale, $height, true, true);
                             } else {
                                 // 0、没有给出宽高值
-                                $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                                $this->pallete->thumbnailImage($dst_w, $dst_h, true, true);
                             }
                         }
                     }
                     break;
                 case 'pad': // 5、固定宽高，缩略填充：resize,m_pad,w_200,h_200
-                    if (isset($this->param['width'], $this->param['height'])) {
-                        $width = (int)$this->param['width'];
-                        $height = (int)$this->param['height'];
+                    if (isset($this->processor['width'], $this->processor['height'])) {
                         if ($width >= $height) {
                             // 宽图
                             $scale = $width / $dst_w;
-                            $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage($width, $dst_h * $scale, true, true);
                         } else {
                             // 高图
                             $scale = $height / $dst_h;
-                            $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                            $this->pallete->thumbnailImage($dst_w * $scale, $height, true, true);
                         }
                     } else {
-                        if (isset($this->param['width'])) {
-                            $width = (int)$this->param['width'];
+                        if (isset($this->processor['width'])) {
                             // 1、宽度固定，高度自适应：resize,m_lfit,w_200
                             $scale = $width / $dst_w;
-                            $pallete->thumbnailImage($this->param['width'], $dst_h * $scale, true, true);
+                            $this->pallete->thumbnailImage($width, $dst_h * $scale, true, true);
                         } else {
-                            if (isset($this->param['height'])) {
-                                $height = (int)$this->param['height'];
+                            if (isset($this->processor['height'])) {
                                 //	2、高度固定，宽度自适应：resize,m_lfit,h_200
                                 $scale = $height / $dst_h;
-                                $pallete->thumbnailImage($dst_w * $scale, $this->param['height'], true, true);
+                                $this->pallete->thumbnailImage($dst_w * $scale, $height, true, true);
                             } else {
                                 // 0、没有给出宽高值
-                                $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                                $this->pallete->thumbnailImage($dst_w, $dst_h, true, true);
                             }
                         }
                     }
@@ -522,32 +475,32 @@
                 case 'fixed': // 7、强制宽高：resize,m_fixed,w_200,h_200
                     break;
                 default:
-                    $pallete->thumbnailImage($dst_w, $dst_h, true, true);
+                    $this->pallete->thumbnailImage($dst_w, $dst_h, true, true);
                     break;
             }
 
             /**自适应方向**/
-            if ($this->param['autoorient'] == true || $this->param['autoorient'] == 1) {
-                $orientation = $pallete->getImageOrientation();
+            if ($this->processor['autoorient'] == true || $this->processor['autoorient'] == 1) {
+                $orientation = $this->pallete->getImageOrientation();
                 header('X-coss-orient:' . $orientation);
                 switch ($orientation) {
                     case Imagick::ORIENTATION_BOTTOMRIGHT:
-                        $pallete->rotateImage('#000', 180);
+                        $this->pallete->rotateImage('#000', 180);
                         break;
                     case Imagick::ORIENTATION_RIGHTTOP:
-                        $pallete->rotateImage('#000', 90);
+                        $this->pallete->rotateImage('#000', 90);
                         break;
                     case Imagick::ORIENTATION_LEFTBOTTOM:
-                        $pallete->rotateImage('#000', -90);
+                        $this->pallete->rotateImage('#000', -90);
                         break;
                 }
-                $pallete->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
+                $this->pallete->setImageOrientation(Imagick::ORIENTATION_TOPLEFT);
             }
 
             /**
              * 添加水印
              */
-            if ($this->param['watermark'] === 'text') {
+            if ($this->processor['watermark'] === 'text') {
                 // 文字水印
                 header('X-water:text');
 
@@ -566,7 +519,7 @@
                 $draw = new ImagickDraw();        // new 画笔
 
                 // 设置水印文本的9个位置
-                switch ($this->param['water_gravity']) {
+                switch ($this->processor['water_gravity']) {
                     case 'north': // 上
                         $draw->setgravity(Imagick::GRAVITY_NORTH);
                         break;
@@ -599,24 +552,22 @@
 
                 // $font = "include/font/" . $font . ".ttf";
                 if (
-                    !isset($this->param['water_font']) ||
-                    $this->param['water_font'] === 'default' ||
-                    $this->param['water_font'] === 'none' ||
-                    $this->param['water_font'] === 'undefined') {
-                    $this->param['water_font'] = 'simhei.ttf';
+                    !isset($this->processor['water_font']) ||
+                    $this->processor['water_font'] === 'default' ||
+                    $this->processor['water_font'] === 'none' ||
+                    $this->processor['water_font'] === 'undefined') {
+                    $this->processor['water_font'] = 'simhei.ttf';
                 }
                 // TODO：字体路径问题？不应该写成固定
-                // $draw->setfont(COMMONS . "typeface/".$this->param["water_font"].".ttf"); // 设置字体
-                // $draw->setfont(COMMONS . "/typeface/".$this->param["water_font"]); // 设置字体
-                $typeface = $_SERVER['DOCUMENT_ROOT'] . '/public/commons/typeface/' . $this->param['water_font'];
+                $typeface = $_SERVER['DOCUMENT_ROOT'] . '/public/typeface/' . $this->processor['water_font'];
                 if (file_exists($typeface)) {
-                    $draw->setfont($_SERVER['DOCUMENT_ROOT'] . '/public/commons/typeface/' . $this->param['water_font']); // 设置字体
+                    $draw->setfont($typeface); // 设置字体
                 }
-                header('Typeface:' . $this->param['water_font']);
+                header('Typeface:' . $this->processor['water_font']);
                 header('Typeface_path:' . $typeface);
 
-                if (isset($this->param['water_size']) && !empty($this->param['water_size'])) {
-                    $fontSize = (int)$this->param['water_size'];
+                if (isset($this->processor['water_size']) && !empty($this->processor['water_size'])) {
+                    $fontSize = (int)$this->processor['water_size'];
                     if ($fontSize <= 1) {
                         $fontSize = 1;
                     } elseif ($fontSize >= 999) {
@@ -626,30 +577,27 @@
                     header('Water_size:' . $fontSize);
                 }
                 // 设置字体颜色
-                if (isset($this->param['water_color']) && !empty($this->param['water_color'])) {
-                    $draw->setFillColor(new ImagickPixel($this->param['water_color']));
-                    header('Water_color:' . $this->param['water_color']);
+                if (isset($this->processor['water_color']) && !empty($this->processor['water_color'])) {
+                    $draw->setFillColor(new ImagickPixel($this->processor['water_color']));
+                    header('Water_color:' . $this->processor['water_color']);
                 } else {
                     $draw->setFillColor(new ImagickPixel('#000000'));
                 }
 
                 // 设置字体透明度
-                // if(isset($this->param["water_alpha"])){
-                if (isset($this->param['water_opacity']) && !empty($this->param['water_opacity'])) {
-                    // $fillAlpha = intval($this->param["water_alpha"]);
-                    $fillAlpha = (int)$this->param['water_opacity'];
+                if (isset($this->processor['water_opacity']) && !empty($this->processor['water_opacity'])) {
+                    $fillAlpha = (int)$this->processor['water_opacity'];
 
                     if ($fillAlpha < 0) {
                         $fillAlpha = 0;
                     } elseif ($fillAlpha > 100) {
                         $fillAlpha = 100;
                     }
-                    // $draw->setFillAlpha($fillAlpha);
                     $draw->setFillOpacity($fillAlpha / 100);
                 }
                 // 水印文字偏移量X
-                if (isset($this->param['water_x'])) {
-                    $offsetx = (int)$this->param['water_x'];
+                if (isset($this->processor['water_x'])) {
+                    $offsetx = (int)$this->processor['water_x'];
                     if ($offsetx < 1) {
                         $offsetx = 1;
                     } elseif ($offsetx > 4096) {
@@ -659,8 +607,8 @@
                     $offsetx = 10;
                 }
                 // 水印文字偏移量Y
-                if (isset($this->param['water_y'])) {
-                    $offsety = (int)$this->param['water_y'];
+                if (isset($this->processor['water_y'])) {
+                    $offsety = (int)$this->processor['water_y'];
                     if ($offsety < 1) {
                         $offsety = 1;
                     } elseif ($offsety > 4096) {
@@ -670,8 +618,8 @@
                     $offsety = 10;
                 }
                 // 水印文字旋转
-                if (isset($this->param['water_rotate'])) {
-                    $offset_rotate = $this->param['water_rotate'];
+                if (isset($this->processor['water_rotate'])) {
+                    $offset_rotate = $this->processor['water_rotate'];
                     if ($offset_rotate < 0) {
                         $offset_rotate = 0;
                     } elseif ($offset_rotate > 360) {
@@ -681,17 +629,17 @@
                     $offset_rotate = 0;
                 }
 
-                if (isset ($this->param['water_under_color'])) {
-                    // $draw->setTextUnderColor("#".$this->param["water_under_color"]);
+                if (isset ($this->processor['water_under_color'])) {
+                    // $draw->setTextUnderColor("#".$this->processor["water_under_color"]);
                 }
 
                 $draw->setTextEncoding('UTF-8');
                 // 设置文字水印
-                $waterText = base64_decode($this->param['water_text']);
-                // $waterText = $this->param["water_text"];
+                $waterText = base64_decode($this->processor['water_text']);
+                // $waterText = $this->processor["water_text"];
                 // 是否铺满整个图片
-                if (isset($this->param['water_fill']) && $this->param['water_fill'] == 1) {
-                    $properties = $pallete->queryFontMetrics($draw, $waterText);
+                if (isset($this->processor['water_fill']) && $this->processor['water_fill'] == 1) {
+                    $properties = $this->pallete->queryFontMetrics($draw, $waterText);
                     /* ImageProcessor::queryFontMetrics()（{
                         "characterWidth":10,
                         "characterHeight":10,
@@ -706,11 +654,11 @@
                     } */
                     // Log::info('ImageProcessor::queryFontMetrics()' . json_encode($properties));
 
-                    for ($i = 0, $iMax = (int)($this->param['width'] / $properties['textWidth'] + 5); $i <= $iMax; $i++) {
-                        for ($j = 0, $jMax = (int)($this->param['height'] / $properties['textHeight'] + 10); $j <= $jMax; $j++) {
+                    for ($i = 0, $iMax = (int)($this->processor['width'] / $properties['textWidth'] + 5); $i <= $iMax; $i++) {
+                        for ($j = 0, $jMax = (int)($this->processor['height'] / $properties['textHeight'] + 10); $j <= $jMax; $j++) {
                             // 查看是否有旋转
-                            if (isset($this->param['water_angle'])) {
-                                $pallete->annotateImage(
+                            if (isset($this->processor['water_angle'])) {
+                                $this->pallete->annotateImage(
                                     $draw,
                                     $properties['textWidth'] * $i + $offsetx,
                                     $properties['textWidth'] * $offset_rotate / 100 * $j,
@@ -718,69 +666,60 @@
                                     $waterText
                                 );
                             } else {
-                                $pallete->annotateImage(
+                                $this->pallete->annotateImage(
                                     $draw,
-                                    ($properties['textWidth'] + $this->param['water_x']) * $i + $offsetx,
-                                    ($properties['textHeight'] + $this->param['water_y']) * $j + $offsetx,
+                                    ($properties['textWidth'] + $this->processor['water_x']) * $i + $offsetx,
+                                    ($properties['textHeight'] + $this->processor['water_y']) * $j + $offsetx,
                                     $offset_rotate,
                                     $waterText
                                 );
                             }
                         }
                     }
-
                 } else {
-                    $pallete->annotateImage($draw, $offsetx, $offsety, $offset_rotate, $waterText); // 往画布中写入文本
+                    $this->pallete->annotateImage($draw, $offsetx, $offsety, $offset_rotate, $waterText); // 往画布中写入文本
                 }
-            } elseif ($this->param['watermark'] === 'image') {
+            } elseif ($this->processor['watermark'] === 'image') {
                 // 图片水印
                 header('X-water:image');
             }
 
-            $this->image->setImageFormat(strtolower($this->param['format'])); // 设置图片格式
-            $this->image = $pallete;
+            $this->pallete->setImageFormat(strtolower($this->processor['format'])); // 设置图片格式
 
-            if ($outtype === 'stream') {
-                echo $pallete;
-            }
             // 如果图片不需要在当前php程序中输出，使用写入图片到磁盘函数，上面的设置header也可以去除
             $filename = $this->getThumbFilePath();
 
-            if ($pallete->writeImage($filename) == true) {
+            if ($this->pallete->writeImage($filename) == true) {
                 header('X-save:' . $filename);
-                echo $filename;
-            } else {
-                echo $pallete;
             }
-
-            $pallete->clear();
-            $pallete->destroy(); //释放资源
-
-            $this->Logcat(
-                'ImageProcessor::getImage() RunTime：（' . round((microtime(true) - $startTime), 4) . '秒）（Param=>：'
-                . json_encode($this->param, JSON_UNESCAPED_UNICODE) . '）'
-            );
-
+            echo $this->pallete;
+            return $this->pallete;
         }
 
         /**
          * 直接输出图片
          *
-         * @param $imgsrc
+         * @param string $img
          */
-        public function getImg($imgsrc)
+        public function getImage(string $img)
         {
-            $info = getimagesize($imgsrc);
+            $info = getimagesize($img);
             $imgExt = image_type_to_extension($info[2], false);  //获取文件后缀
             $fun = "imagecreatefrom{$imgExt}";
-            $imgInfo = $fun($imgsrc);                     //1.由文件或 URL 创建一个新图象。如:imagecreatefrompng ( string $filename )
+            //1.由文件或 URL 创建一个新图象。如:imagecreatefrompng ( string $filename )
+            $imgInfo = $fun($img);
             //$mime = $info['mime'];
-            $mime = image_type_to_mime_type(exif_imagetype($imgsrc)); //获取图片的 MIME 类型
+            //获取图片的 MIME 类型
+            $mime = image_type_to_mime_type(exif_imagetype($img));
             header('Content-Type:' . $mime);
             $quality = 100;
-            if ($imgExt === 'png') $quality = 9;        //输出质量,JPEG格式(0-100),PNG格式(0-9)
+            //输出质量,JPEG格式(0-100),PNG格式(0-9)
+            if ($imgExt === 'png') {
+                $quality = 9;
+            }
             $getImgInfo = "image{$imgExt}";
-            $getImgInfo($imgInfo, null, $quality);    //2.将图像输出到浏览器或文件。如: imagepng ( resource $image )
+            //2.将图像输出到浏览器或文件。如: imagepng ( resource $image )
+            $getImgInfo($imgInfo, null, $quality);
             imagedestroy($imgInfo);
         }
 
@@ -790,11 +729,11 @@
         }
 
         /**
+         * 输出当前日志
          * @return mixed
          */
         public function getLog()
         {
             return $this->logcat;
         }
-
     }

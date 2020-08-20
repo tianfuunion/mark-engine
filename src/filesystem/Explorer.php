@@ -1496,7 +1496,7 @@
          *
          * @return array|bool
          */
-        public function list_dir_info(string $dirname, $is_all = false, $exts = '', $sort = 'ASC')
+        public static function list_dir_info(string $dirname, $is_all = false, $exts = '', $sort = 'ASC')
         {
             // 处理多于的/号
             $new = strrev($dirname);
@@ -1570,15 +1570,20 @@
         }
 
         /**
-         * 返回指定路径的文件夹信息，其中包含指定路径中的文件和目录
-         *
+         * 列出目录中的文件和目录：
          * @param string $dir
-         *
+         * @param int $sorting_order
+         * @param null $context
          * @return array|false
          */
-        public function dir_info(string $dir)
+        public static function scandir(string $dir, int $sorting_order = 0, $context = null)
         {
-            return scandir($dir);
+            $path = realpath($dir);
+            if (empty($dir) || $path == false || !file_exists($path)) {
+                return false;
+            }
+
+            return scandir($path);
         }
 
         /**
@@ -1610,7 +1615,7 @@
          *
          * @return array
          */
-        public function list_info(string $file)
+        public static function list_info(string $file)
         {
             $dir = array();
             $dir['filename'] = basename($file);//返回路径中的文件名部分。
@@ -1659,7 +1664,7 @@
          *
          * @return array
          */
-        public function open_info($file)
+        public static function open_info($file)
         {
             $file = fopen($file, 'rb');
             $result = fstat($file);
