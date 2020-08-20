@@ -4,6 +4,7 @@
     namespace mark\response;
 
     use Imagick;
+    use ImagickException;
     use think\Cookie;
     use think\Request;
     use think\Response;
@@ -16,7 +17,7 @@
         protected $expire = 360;
         protected $mimeType;
 
-        public static function display($data = '', int $code = 200)
+        public static function display($data, int $code = 200)
         {
             $cookie = new Cookie(new Request());
 
@@ -42,16 +43,15 @@
         protected function output($data)
         {
             if ($data == '' || $data == null || empty($data)) {
-                // throw new \Exception('file not exists:' . $data);
+                throw new ImagickException('Can not process empty Imagick object:' . $data);
             }
 
-            ob_end_clean();
+            // ob_end_clean();
 
-            $mimeType = $this->getMimeType($data);
 
             $this->header['Pragma'] = 'public';
 
-            $this->header['Content-Type'] = $mimeType ?: 'image/jpg';
+            $this->header['Content-Type'] = $this->getMimeType($data);
 
             $this->header['Cache-control'] = 'max-age=' . $this->expire;
             $this->header['Content-Length'] = $this->getImageLength($data);
@@ -110,16 +110,18 @@
          * @param $imagick
          * @return string
          */
-        protected function getMimeType($imagick): string
+        protected function getMimeType($imagick, $default = 'image/jpg'): string
         {
+            if (empty($this->mimeType) && $imagick !== null && !empty($imagick) && $imagick instanceof Imagick) {
+                $this->mimeType = $imagick->getImageMimeType();
+            }
+            if ($this->mimeType == 'image/x-webp') {
+                $this->mimeType = 'image/webp';
+            }
             if (!empty($this->mimeType)) {
                 return $this->mimeType;
             }
-
-            if ($imagick !== null && !empty($imagick) && $imagick instanceof Imagick) {
-                return $imagick->getImageMimeType();
-            }
-            return 'image/jpg';
+            return $default;
         }
 
         /**

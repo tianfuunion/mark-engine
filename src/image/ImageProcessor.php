@@ -83,6 +83,7 @@
                 $this->processor = $processor;
             } else {
                 $this->logcat("debug", 'ImageProcessor::__construct(param is Null)');
+                // $this->processor = array('process' => 'source');
             }
 
             if ($path && Explorer::isdir($path)) {
@@ -254,7 +255,7 @@
          */
         private function getSourceFile()
         {
-            $sourceFile = $this->storage_path . DIRECTORY_SEPARATOR . $this->processor['path'] . $this->processor['object'];
+            $sourceFile = $this->storage_path . $this->processor['path'] . $this->processor['object'];
             header('X-Coss-Source: ' . $sourceFile);
             if (is_file($sourceFile) && file_exists(dirname($sourceFile))) {
                 return $sourceFile;
@@ -323,20 +324,18 @@
 
             // 检测是否有已经生成的图片，有则直接返回
             $thumbFile = $this->getThumbFile();
-            if ($this->processor['process'] !== 'source' && $thumbFile !== false && $this->isExpires() == false) {
+            if ($this->processor['process'] ?? 'thumb' !== 'source' && $thumbFile !== false && $this->isExpires() == false) {
                 $this->pallete = new Imagick($thumbFile); // new一个新的画布对象
-                // echo $this->pallete;
-                return $this->pallete;
+                return $this->pallete->getImage();
             }
 
             $sourceFile = $this->getSourceFile();
             if ($sourceFile == false) {
-                header("Status: 410 Invalid request file " . $this->processor["object"]);
-                header("X-status: 410 Invalid request file " . $this->processor["object"]);
-                header("X-object: " . $this->processor["object"]);
+                header("Status: 410 Invalid request file " . $this->processor["object"] ?? '');
+                header("X-status: 410 Invalid request file " . $this->processor["object"] ?? '');
+                header("X-object: " . $this->processor["object"] ?? '');
                 $this->pallete = new Imagick($this->images_path . "default.jpg");
-                // echo $this->pallete;
-                return $this->pallete;
+                return $this->pallete->getImage();
             }
 
             $this->pallete = new Imagick($sourceFile); // new一个新的画布对象
@@ -693,7 +692,15 @@
                 header('X-save:' . $filename);
             }
             // echo $this->pallete;
-            return $this->pallete;
+            return $this->pallete->getImage();
+        }
+
+        /**
+         * @return string
+         */
+        public function getImageMimeType()
+        {
+            return $this->pallete->getImageMimeType();
         }
 
         /**
