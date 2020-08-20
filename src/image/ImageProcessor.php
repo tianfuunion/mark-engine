@@ -325,7 +325,7 @@
             $thumbFile = $this->getThumbFile();
             if ($this->processor['process'] !== 'source' && $thumbFile !== false && $this->isExpires() == false) {
                 $this->pallete = new Imagick($thumbFile); // new一个新的画布对象
-                echo $this->pallete;
+                // echo $this->pallete;
                 return $this->pallete;
             }
 
@@ -335,7 +335,7 @@
                 header("X-status: 410 Invalid request file " . $this->processor["object"]);
                 header("X-object: " . $this->processor["object"]);
                 $this->pallete = new Imagick($this->images_path . "default.jpg");
-                echo $this->pallete;
+                // echo $this->pallete;
                 return $this->pallete;
             }
 
@@ -692,7 +692,7 @@
             if ($this->pallete->writeImage($filename) == true) {
                 header('X-save:' . $filename);
             }
-            echo $this->pallete;
+            // echo $this->pallete;
             return $this->pallete;
         }
 

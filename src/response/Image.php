@@ -116,7 +116,7 @@
                 return $this->mimeType;
             }
 
-            if ($imagick !== null && $imagick instanceof Imagick) {
+            if ($imagick !== null && !empty($imagick) && $imagick instanceof Imagick) {
                 return $imagick->getImageMimeType();
             }
             return 'image/jpg';
