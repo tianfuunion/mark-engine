@@ -28,7 +28,6 @@
      **+==================================================*/
     final class Os
     {
-
         private function __construct()
         {
 
@@ -37,7 +36,6 @@
         /**
          * 获取HTTP代理
          *
-         * /**
          * @return string
          */
         public static function getAgent()
@@ -54,6 +52,7 @@
 
         /**
          * HTTP请求头
+         *
          * @return string
          */
         public static function getAccept()
@@ -66,6 +65,7 @@
 
         /**
          * 获取HTTP代理
+         *
          * @return string
          * @see Os::getAgent()
          */
@@ -583,7 +583,6 @@
 
         /**
          * 检测是否使用手机访问
-         * @access public
          * @return bool
          */
         public static function isMobile(): bool
@@ -601,6 +600,32 @@
             }
 
             return false;
+        }
+
+        /**
+         * 获取设备类型
+         *
+         * @return string
+         */
+        public static function getDeviceType()
+        {
+            $agent = self::getAgent();
+            if (strpos($agent, 'ipad')) {
+                return "tablet";
+            }
+
+            if (strpos($agent, 'android')) {
+                if (!strstr($agent, 'mobile')) {
+                    return "tablet";
+                }
+                return "mobile";
+            }
+
+            if (strpos($agent, 'iphone')) {
+                return "mobile";
+            }
+
+            return 'pc';
         }
 
         /**
@@ -765,6 +790,7 @@
             return array(
                 'agent' => self::getAgent(),
                 'os' => self::getOs(),
+                'type' => self::getDeviceType(),
 
                 'brand' => self::getBrand(),
 
