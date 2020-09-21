@@ -45,16 +45,6 @@
             top.location = self.location;
         }
 
-        /**========================== 构建侧边导航下拉列表 ==========================*/
-        /*
-        $("#collapse").collapse({
-            "title": "导航右侧按钮",
-            "name": "navright",
-            "action": "",
-            "data": "<{$Think.config.app.host}>/api.php/ram/channel",
-        });
-        */
-
         /**========================== 侧边导航下拉列表 ==========================*/
         $(document).on("click", ".nav-left", function (event) {
             $(".mk-collapse-container.mk-sidebar-left").toggleClass("visible");
