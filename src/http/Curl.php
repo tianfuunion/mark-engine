@@ -160,55 +160,71 @@
             switch ($type) {
                 case 'json':
                     $this->add_header('Content-Type', 'application/json');
+                    $this->add_header('Accept', 'application/json');
                     break;
                 case 'pdf':
                     $this->add_header('Content-Type', 'application/pdf');
+                    $this->add_header('Accept', 'application/pdf');
                     break;
                 case 'msword':
                     $this->add_header('Content-Type', 'application/msword');
+                    $this->add_header('Accept', 'application/msword');
                     break;
                 case 'stream':
                     $this->add_header('Content-Type', 'application/octet-stream');
+                    $this->add_header('Accept', 'application/octet-stream');
                     break;
 
                 case 'html':
                     $this->add_header('Content-Type', 'text/html');
+                    $this->add_header('Accept', 'text/html');
                     break;
                 case  'text':
                     $this->add_header('Content-Type', 'text/plain');
+                    $this->add_header('Accept', 'text/plain');
                     break;
                 case  'xml':
                     $this->add_header('Content-Type', 'text/xml');
+                    $this->add_header('Accept', 'text/xml');
                     break;
 
                 case  'gif':
                     $this->add_header('Content-Type', 'image/gif');
+                    $this->add_header('Accept', 'image/gif');
                     break;
                 case  'jpeg':
                     $this->add_header('Content-Type', 'image/jpeg');
+                    $this->add_header('Accept', 'image/jpeg');
                     break;
                 case  'png':
                     $this->add_header('Content-Type', 'image/png');
+                    $this->add_header('Accept', 'image/png');
                     break;
                 case  'webp':
                     $this->add_header('Content-Type', 'image/webp');
+                    $this->add_header('Accept', 'image/webp');
                     break;
 
                 case  'mp3':
                     $this->add_header('Content-Type', 'audio/mp3');
+                    $this->add_header('Accept', 'audio/mp3');
                     break;
                 case  'wav':
                     $this->add_header('Content-Type', 'audio/wav');
+                    $this->add_header('Accept', 'audio/wav');
                     break;
 
                 case  'mp4':
                     $this->add_header('Content-Type', 'video/mpeg4');
+                    $this->add_header('Accept', 'video/mpeg4');
                     break;
 
                 default:
                     $this->add_header('Content-Type', 'application/x-www-data-urlencode');
+                    $this->add_header('Accept', 'application/x-www-data-urlencode');
                     break;
             }
+
             return $this->initialize();
         }
 
@@ -225,6 +241,8 @@
             $this->url = $url;
             $this->method = 'post';
             $this->add_header('Content-Type', 'application/x-www-form-urlencode');
+            $this->add_header('Accept', 'application/x-www-form-urlencode');
+
             return $this->initialize()->append($data);
         }
 
@@ -240,6 +258,7 @@
             $this->url = $url;
             $this->method = 'upload';
             $this->add_header('Content-Type', 'multipart/form-data');
+            $this->add_header('Accept', 'multipart/form-data');
 
             return $this->initialize();
         }
@@ -258,6 +277,7 @@
         {
             $this->method = 'download';
             $this->add_header('Content-Type', 'application/octet-stream');
+            $this->add_header('Accept', 'application/octet-stream');
 
             if (empty(trim($url))) {
                 return array('file_name' => '', 'save_path' => '', 'error' => 1);
@@ -663,7 +683,10 @@
         {
             // 设置请求地址
             curl_setopt($this->getCurl(), CURLOPT_URL, $this->url);
-            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' Mark/' . Mark::VERSION);
+            //设置请求头(可有可无)
+            curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
+
+            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' MarK/' . Mark::VERSION);
 
             //设置cURL允许执行的最长秒数。
             if ($this->timeout > 0) {
@@ -723,9 +746,6 @@
                     //设置为get请求
                     curl_setopt($this->getCurl(), CURLOPT_HTTPGET, true);
 
-                    // 设置HTTP头字段的数组。
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
-
                     // 重新为Url添加Get参数
                     if (!empty($this->url) && !empty($this->formData)) {
                         $this->url .= (strpos($this->url, '?') === false ? '?' : '&') . http_build_query($this->formData);
@@ -735,8 +755,6 @@
                 case 'post':
                     //设置为post请求
                     curl_setopt($this->getCurl(), CURLOPT_POST, true);
-                    // 设置HTTP头字段的数组
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
 
                     { // TODO：待删除代码块
                         $parse_url = parse_url($this->url);
@@ -772,10 +790,6 @@
                      *
                      */
                     curl_setopt($this->getCurl(), CURLOPT_POST, 1); //设置为post请求
-                    // 从php5.2开始,要上传文件,必须给CURLOPT_POSTFIELDS传递数组,而不是字符串。
-                    // 也只有传递数组,http头部的"Content-Type"才会设置成"multipart/form-data"
-                    // curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->uploadheader);
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
 
                     // curl_setopt($this->getCurl(), CURLOPT_POSTFIELDS, http_build_query($this->formData));
                     // curl_setopt($this->getCurl(), CURLOPT_POSTFIELDS, $this->formData);
@@ -807,16 +821,12 @@
                     */
                     break;
                 case 'put':
-                    //设置请求头(可有可无)
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
                     //定义请求类型
                     curl_setopt($this->getCurl(), CURLOPT_CUSTOMREQUEST, 'put');
                     //定义提交的数据
                     curl_setopt($this->getCurl(), CURLOPT_POSTFIELDS, http_build_query($this->formData));
                     break;
                 case 'download':
-                    //设置请求头(可有可无)
-                    curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
                     //定义请求类型
                     // curl_setopt($this->getCurl(), CURLOPT_CUSTOMREQUEST, "put");
                     //定义提交的数据
@@ -891,6 +901,7 @@
         public function setCharset($charset = 'utf-8'): self
         {
             $this->add_header('charset', $charset);
+
             return $this;
         }
 
@@ -906,6 +917,7 @@
         public function add_header($key, $value): self
         {
             $this->requestHeaders[$key] = $value;
+
             return $this;
         }
 
