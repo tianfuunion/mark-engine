@@ -53,7 +53,7 @@
         /**
          * The headers being sent in the request.
          */
-        public $request_headers = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache');
+        public $request_headers = array('Content-type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache');
 
         /**
          * 是否支持重定向(默认不支持)
@@ -934,7 +934,7 @@
                 'Date' => gmdate('D, d M Y H:i:s \G\M\T')
             );
 
-            $headers = array_merge($this->request_headers, $options);
+            $headers = array_merge($options, $this->request_headers);
 
             return $headers;
         }
@@ -947,7 +947,13 @@
         private function getHeader(): array
         {
             $this->request_headers = $this->generateHeaders();
-            return $this->request_headers;
+
+            $temp_headers = array();
+            foreach ($this->request_headers as $k => $v) {
+                $temp_headers[] = $k . ': ' . $v;
+            }
+            $temp_headers[] = 'Expect:';
+            return $temp_headers;
         }
 
         /**
