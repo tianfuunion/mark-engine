@@ -50,11 +50,11 @@
          * 是否开启请求头
          * @var bool
          */
-        private $request_header_out = false;
+        private $requestHeaderOut = false;
         /**
          * The headers being sent in the request.
          */
-        public $request_headers = array('Content-type' => 'text/html', 'Charset' => 'utf-8', 'Accept' => '*/*', 'Cache-control' => 'no-cache', 'Pragma' => 'no-cache');
+        public $requestHeaders = array('Content-type' => 'text/html', 'Charset' => 'utf-8', 'Accept' => '*/*', 'Cache-control' => 'no-cache', 'Pragma' => 'no-cache');
 
         /**
          * 是否支持重定向(默认不支持)
@@ -704,7 +704,7 @@
             }
 
             //至关重要，CURLINFO_HEADER_OUT选项可以拿到请求头信息
-            if ($this->request_header_out) {
+            if ($this->requestHeaderOut) {
                 curl_setopt($this->getCurl(), CURLINFO_HEADER_OUT, true);
             }
 
@@ -905,7 +905,7 @@
          */
         public function add_header($key, $value): self
         {
-            $this->request_headers[$key] = $value;
+            $this->requestHeaders[$key] = $value;
             return $this;
         }
 
@@ -917,8 +917,8 @@
          */
         public function remove_header($key): self
         {
-            if (isset($this->request_headers[$key])) {
-                unset($this->request_headers[$key]);
+            if (isset($this->requestHeaders[$key])) {
+                unset($this->requestHeaders[$key]);
             }
             return $this;
         }
@@ -932,11 +932,10 @@
         {
             $options = array(
                 'Accept ' => Os::getAccept(),
-                'User-Agent' => Os::getAgent() . ' Mark/' . Mark::VERSION,
                 'Date' => gmdate('D, d M Y H:i:s \G\M\T')
             );
 
-            $headers = array_merge($options, $this->request_headers);
+            $headers = array_merge($options, $this->requestHeaders);
 
             return $headers;
         }
@@ -948,10 +947,10 @@
          */
         private function getHeader(): array
         {
-            $this->request_headers = $this->generateHeaders();
+            $this->requestHeaders = $this->generateHeaders();
 
             $temp_headers = array();
-            foreach ($this->request_headers as $k => $v) {
+            foreach ($this->requestHeaders as $k => $v) {
                 $temp_headers[] = $k . ': ' . $v;
             }
             $temp_headers[] = 'Expect:';
