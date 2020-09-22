@@ -43,14 +43,17 @@
 
         private $url; // 访问的url
         private $method = 'get'; // 访问方式,默认是GET请求
+
         /**
          * @link https://www.runoob.com/http/http-content-type.html
-         * @var string
+         * 是否开启请求头
+         * @var bool
          */
-        private $content_type = 'text/html';
-        private $cache_control = 'no-cache';
-        private $pragma = 'no-cache';
-        private $charset = 'utf-8';
+        private $request_header_out = false;
+        /**
+         * The headers being sent in the request.
+         */
+        public $request_headers = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache');
 
         /**
          * 是否支持重定向(默认不支持)
@@ -80,12 +83,6 @@
 
         private $errno;
         private $errmsg;
-
-        /**
-         * 是否开启请求头
-         * @var bool
-         */
-        private $request_header_out = false;
 
         // 响应头
         private $responseCode = 0; // 响应码
@@ -161,54 +158,54 @@
             $this->method = 'get';
             switch ($type) {
                 case 'json':
-                    $this->content_type = 'application/json';
+                    $this->add_header('Content-Type', 'application/json');
                     break;
                 case 'pdf':
-                    $this->content_type = 'application/pdf';
+                    $this->add_header('Content-Type', 'application/pdf');
                     break;
                 case 'msword':
-                    $this->content_type = 'application/msword';
+                    $this->add_header('Content-Type', 'application/msword');
                     break;
                 case 'stream':
-                    $this->content_type = 'application/octet-stream';
+                    $this->add_header('Content-Type', 'application/octet-stream');
                     break;
 
                 case 'html':
-                    $this->content_type = 'text/html';
+                    $this->add_header('Content-Type', 'text/html');
                     break;
                 case  'text':
-                    $this->content_type = 'text/plain';
+                    $this->add_header('Content-Type', 'text/plain');
                     break;
                 case  'xml':
-                    $this->content_type = 'text/xml';
+                    $this->add_header('Content-Type', 'text/xml');
                     break;
 
                 case  'gif':
-                    $this->content_type = 'image/gif';
+                    $this->add_header('Content-Type', 'image/gif');
                     break;
                 case  'jpeg':
-                    $this->content_type = 'image/jpeg';
+                    $this->add_header('Content-Type', 'image/jpeg');
                     break;
                 case  'png':
-                    $this->content_type = 'image/png';
+                    $this->add_header('Content-Type', 'image/png');
                     break;
                 case  'webp':
-                    $this->content_type = 'image/webp';
+                    $this->add_header('Content-Type', 'image/webp');
                     break;
 
                 case  'mp3':
-                    $this->content_type = 'audio/mp3';
+                    $this->add_header('Content-Type', 'audio/mp3');
                     break;
                 case  'wav':
-                    $this->content_type = 'audio/wav';
+                    $this->add_header('Content-Type', 'audio/wav');
                     break;
 
                 case  'mp4':
-                    $this->content_type = 'video/mpeg4';
+                    $this->add_header('Content-Type', 'video/mpeg4');
                     break;
 
                 default:
-                    $this->content_type = 'application/x-www-data-urlencode';
+                    $this->add_header('Content-Type', 'application/x-www-data-urlencode');
                     break;
             }
             return $this->initialize();
@@ -226,7 +223,7 @@
         {
             $this->url = $url;
             $this->method = 'post';
-            $this->content_type = 'application/x-www-form-urlencoded';
+            $this->add_header('Content-Type', 'application/x-www-form-urlencode');
             return $this->initialize()->append($data);
         }
 
@@ -241,7 +238,7 @@
         {
             $this->url = $url;
             $this->method = 'upload';
-            $this->content_type = 'multipart/form-data';
+            $this->add_header('Content-Type', 'multipart/form-data');
 
             return $this->initialize();
         }
@@ -259,7 +256,7 @@
         public function download(string $url, $savePath = '', $fileName = '', $suffix = ''): self
         {
             $this->method = 'download';
-            $this->content_type = 'application/octet-stream';
+            $this->add_header('Content-Type', 'application/octet-stream');
 
             if (empty(trim($url))) {
                 return array('file_name' => '', 'save_path' => '', 'error' => 1);
@@ -892,34 +889,54 @@
          */
         public function setCharset($charset = 'utf-8'): self
         {
-            $this->charset = $charset;
+            $this->add_header('charset', $charset);
+            return $this;
+        }
+
+
+        /**
+         * 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+         * Add a custom HTTP header to the cURL request.
+         *
+         * @param string $key (Required) The custom HTTP header to set.
+         * @param mixed $value (Required) The value to assign to the custom HTTP header.
+         * @return $this A reference to the current instance.
+         */
+        public function add_header($key, $value): self
+        {
+            $this->request_headers[$key] = $value;
             return $this;
         }
 
         /**
-         * 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+         * Remove an HTTP header from the cURL request.
          *
-         * @param array|string[] $header
-         * @return $this
+         * @param string $key (Required) The custom HTTP header to set.
+         * @return $this A reference to the current instance.
          */
-        public function setheader(array $header = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache')): self
+        public function remove_header($key): self
         {
-            if (!empty($header['content-type'])) {
-                $this->content_type = $header['content-type'];
-            }
-            if (!empty($header['charset'])) {
-                $this->charset = $header['charset'];
-            }
-            if (!empty($header['accept'])) {
-                $this->content_type = $header['accept'];
-            }
-            if (!empty($header['cache-control'])) {
-                $this->content_type = $header['cache-control'];
-            }
-            if (!empty($header['pragma'])) {
-                $this->content_type = $header['pragma'];
+            if (isset($this->request_headers[$key])) {
+                unset($this->request_headers[$key]);
             }
             return $this;
+        }
+
+        /**
+         * Initialize headers
+         *
+         * @return array
+         */
+        private function generateHeaders(): array
+        {
+            $options = array(
+                'Accept ' => Os::getAccept(),
+                'Date' => gmdate('D, d M Y H:i:s \G\M\T')
+            );
+
+            $headers = array_merge($this->request_headers, $options);
+
+            return $headers;
         }
 
         /**
@@ -929,12 +946,8 @@
          */
         private function getHeader(): array
         {
-            return array(
-                'Content-type: ' . $this->content_type . ';charset=' . $this->charset . ';',
-                'Accept: ' . Os::getAccept(),
-                'Cache-Control: ' . $this->cache_control,
-                'Pragma: ' . $this->pragma,
-            );
+            $this->request_headers = $this->generateHeaders();
+            return $this->request_headers;
         }
 
         /**
@@ -1082,6 +1095,7 @@
         public function __set(string $key, $value): self
         {
             $this->$key = $value;
+
             return $this;
         }
 
@@ -1118,6 +1132,7 @@
         {
             list($key, $value) = $params;
             $this->$key = $value;
+
             return $this;
         }
 
@@ -1186,8 +1201,10 @@
 
             try {
                 return call_user_func_array([self::createFacade(), $method], $params);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
             }
+
             return call_user_func_array($method, $params);
         }
+
     }
