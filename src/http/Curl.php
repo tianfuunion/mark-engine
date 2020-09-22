@@ -931,8 +931,8 @@
         private function generateHeaders(): array
         {
             $options = array(
-                'Accept ' => Os::getAccept() . ' Mark/' . Mark::VERSION,
-                'User-Agent' => Os::getAgent(),
+                'Accept ' => Os::getAccept(),
+                'User-Agent' => Os::getAgent() . ' Mark/' . Mark::VERSION,
                 'Date' => gmdate('D, d M Y H:i:s \G\M\T')
             );
 
