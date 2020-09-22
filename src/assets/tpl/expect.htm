@@ -17,7 +17,7 @@
         <{/if}>
     </div>
     <div class="weui-msg__text-area">
-        <h2 class="weui-msg__title"><{if !empty($mess)}><{$mess}><{else}>敬请期待<{/if}></h2>
+        <h2 class="weui-msg__title"><{$mess|default='敬请期待'}></h2>
         <p class="weui-msg__desc">程序猿同学正在加班加点开发中……</p>
     </div>
     <div class="weui-msg__opr-area weui-btn-area">
@@ -39,19 +39,19 @@
 
 </div>
 <script type="text/javascript">
-    $(document).ready(function () {
-
-    });
     try {
         var seco = document.getElementById("sec");
-        var time = $('#timeout').val().trim();
+        var time = Number(document.getElementById('timeout').value);
+
         var tt = setInterval(function () {
             time--;
             seco.innerHTML = time;
             if (time <= 0) {
-                if (!is_empty($("#location").val().trim())) {
-                    // history.replaceState('forward', null, $("#location").val().trim());
-                    location.replace($("#location").val().trim());
+                if (!is_empty(document.getElementById("location").value)) {
+                    location.replace(document.getElementById("location").value);
+                } else {
+                    history.back(-1);
+                    // closeWeixinWebView();
                 }
                 clearInterval();
             }

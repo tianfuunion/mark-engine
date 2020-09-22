@@ -11,15 +11,15 @@
         </svg>
         <p class="tab-label weui-tabbar__label mui-tab-label">商城</p>
     </a>
-    <{if !empty($Request.session.gid) and $Request.session.gid lt 10}>
-    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'portal'}>active<{/if}>" href="<{$Think.config.app.mobile.host|default=''}>/portal.php/found/index">
+    <{if !empty($Request.session.gid) and $Request.session.gid lt 10 or $Request.session.union.roleid eq 340}>
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'portal'}>active<{/if}>" href="<{$Think.config.app.mobile.host|default=''}>/portal.php">
         <svg class="icon color-default weui-tabbar__icon" aria-hidden="true">
             <use xlink:href="#icon-found"></use>
         </svg>
         <p class="tab-label weui-tabbar__label mui-tab-label">发现</p>
     </a>
     <{/if}>
-    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'account'}>active<{/if}>" href="<{$Think.config.auth.host|default=''}>/console.php/console">
+    <a class="tab-item weui-tabbar__item <{if $Request.controller eq 'console'}>active<{/if}>" href="<{$Think.config.auth.host|default=''}>/console.php/console/workspace">
         <svg class="icon icon-contact weui-tabbar__icon" aria-hidden="true">
             <use xlink:href="#icon-avatar"></use>
         </svg>

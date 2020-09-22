@@ -13,23 +13,24 @@
 
     <div class="weui-msg__text-area">
         <h2 class="weui-msg__title"><{if !empty($settitle)}><{$settitle}><{else}>提示消息<{/if}></h2>
-        <p class="weui-msg__desc"><{if !empty($desc)}><{$desc}><{else}><{/if}></p>
+        <p class="weui-msg__desc"><{$desc|default=''}></p>
 
-        <p class="weui-msg__desc hide">在(
-            <span id="sec" style="color:blue;font-weight:bold"><{if !empty($timeout)}><{$timeout}><{else}>3<{/if}></span> )秒后自动跳转。
+        <p class="weui-msg__desc">在(
+            <span id="sec" style="color:blue;font-weight:bold"><{$timeout|default='3'}></span> )秒后自动跳转。
         </p>
     </div>
 
     <div class="weui-btn-area pb3">
         <{if !empty($location)}>
-        <a data-href="javascript:void(0);" href="<{$location|default=''}>" class="weui-btn weui-btn_primary">
-            <{if empty($handle)}>立即跳转<{else}><{$handle}><{/if}>
-        </a>
+        <a href="<{$location|default=''}>" class="weui-btn weui-btn_primary"><{$handle|default='立即跳转'}></a>
         <{else}>
         <a id="acceptsubmit" href="javascript:closeWeixinWebView();" class="weui-btn weui-btn_primary">确认</a>
         <{/if}>
         <a id="auxiliary" href="javascript:void(0);" onclick="stop(this)" class="weui-btn weui-btn_default hide">辅助操作</a>
     </div>
+
+    <input id="location" type="hidden" value="<{$location|default=''}>">
+    <input id="timeout" type="hidden" value="<{$timeout|default='3'}>">
 
     <div class="weui-msg__extra-area">
         <div class="weui-footer">
@@ -41,17 +42,14 @@
 
 </div>
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function () {
-
-    });
     var seco = document.getElementById("sec");
-    var time = 0;
-    time = Number("<{$timeout}>");
+    var time = Number(document.getElementById('timeout').value);
+
     if (time > 0) {
         var tt = setInterval(function () {
             if (time <= 0) {
-                if (!is_empty("<{$location|default=''}>")) {
-                    location.href = "<{$location|default=''}>";
+                if (!is_empty(document.getElementById("location").value)) {
+                    location.replace(document.getElementById("location").value);
                 } else {
                     history.back(-1);
                     // closeWeixinWebView();

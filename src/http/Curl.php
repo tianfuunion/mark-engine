@@ -35,7 +35,7 @@
      */
     class Curl
     {
-        /**@var Curl */
+        /**@var self */
         private static $instance;
 
         private $curl;
@@ -81,7 +81,10 @@
         private $errno;
         private $errmsg;
 
-        // 请求头
+        /**
+         * 是否开启请求头
+         * @var bool
+         */
         private $request_header_out = false;
 
         // 响应头
@@ -278,14 +281,16 @@
          * 设置文件保存路径
          *
          * @param string $filepath
+         * @return $this
          */
-        public function setFilePath($filepath = ''): void
+        public function setFilePath($filepath = ''): self
         {
             if (trim($filepath) != '') {
                 $this->filePath = trim($filepath);
             } else {
                 $this->filePath = $filepath;
             }
+            return $this;
         }
 
         /**
@@ -308,14 +313,17 @@
 
         /**
          * 设置文件名
+         *
          * @param string $filename
+         * @return $this
          */
-        public function setFileName($filename = ''): void
+        public function setFileName($filename = ''): self
         {
             //保存文件名
             if (trim($filename) != '') {
                 $this->fileName = trim($filename);
             }
+            return $this;
         }
 
         /**
@@ -348,13 +356,17 @@
 
         /**
          * 设置文件后缀
+         *
          * @param string $suffix
+         * @return $this
          */
-        public function setFileSuffix($suffix = ''): void
+        public function setFileSuffix($suffix = ''): self
         {
             if (trim($suffix) !== '') {
                 $this->fileSuffix = trim($suffix);
             }
+
+            return $this;
         }
 
         /**
@@ -534,7 +546,6 @@
         public function push($key, $value): self
         {
             if (!empty($value)) {
-                // $this->formData = array_merge_recursive($this->formData, $value);
                 $this->formData[$key][] = $value;
             }
 
@@ -637,9 +648,8 @@
          * 过时的，可用execute() 代替
          *
          * @return array|bool|false|string
-         * @see execute();
          * @deprecated
-         *
+         * @see Curl::execute();
          */
         public function commit()
         {
@@ -876,18 +886,23 @@
 
         /**
          * 设置请求字符集
+         *
          * @param string $charset
+         * @return $this
          */
-        public function setCharset($charset = 'utf-8')
+        public function setCharset($charset = 'utf-8'): self
         {
             $this->charset = $charset;
+            return $this;
         }
 
         /**
          * 一个用来设置HTTP头字段的数组。使用如下的形式的数组进行设置
+         *
          * @param array|string[] $header
+         * @return $this
          */
-        public function setheader(array $header = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache'))
+        public function setheader(array $header = array('content_type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache')): self
         {
             if (!empty($header['content-type'])) {
                 $this->content_type = $header['content-type'];
@@ -904,13 +919,15 @@
             if (!empty($header['pragma'])) {
                 $this->content_type = $header['pragma'];
             }
+            return $this;
         }
 
         /**
          * 获取HTTP头字段的数组
-         * @return string[]
+         *
+         * @return array
          */
-        private function getHeader()
+        private function getHeader(): array
         {
             return array(
                 'Content-type: ' . $this->content_type . ';charset=' . $this->charset . ';',
@@ -923,11 +940,10 @@
         /**
          * 请求的响应码
          *
-         * @note 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应码
-         *
          * @return int
+         * @todo 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应码
          */
-        public function getResponseCode()
+        public function getResponseCode(): int
         {
             if (intval($this->responseCode) == 0) {
                 $this->execute();
@@ -938,10 +954,9 @@
         /**
          * 获取请求响应头
          *
-         * @note 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应头
-         *
          * @param bool $complete
          * @return string|string[]
+         * @todo 注意：如果当该对象多次调用后，返回的结果为最后一次调用时请求的响应头
          */
         public function getResponseHeader(bool $complete = false)
         {
@@ -962,7 +977,7 @@
          *
          * @return int
          */
-        public function getResponseHeaderSize()
+        public function getResponseHeaderSize(): int
         {
             if ($this->getResponseCode() == 0) {
                 $this->execute();
@@ -1025,17 +1040,19 @@
 
         /**
          * 设置自定义响应回调
+         *
          * @param HttpResponse $HttpResponse
+         * @return $this
          * @todo 待完善
          */
-        public function setHttpResponse(HttpResponse $HttpResponse)
+        public function setHttpResponse(HttpResponse $HttpResponse): self
         {
             $this->HttpResponse = $HttpResponse;
+            return $this;
         }
 
         /**
          * 4、关闭cURL资源,并且释放系统资源
-         *
          */
         public function __destruct()
         {
@@ -1044,7 +1061,6 @@
 
         /**
          * 关闭curl句柄
-         *
          */
         private function close()
         {
@@ -1126,12 +1142,9 @@
         /**
          * 创建Facade实例
          *
-         * @static
-         * @access protected
-         *
          * @param bool $newInstance 是否每次创建新的实例
          *
-         * @return object
+         * @return Curl
          */
         protected static function createFacade(bool $newInstance = false)
         {
