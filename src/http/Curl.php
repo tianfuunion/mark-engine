@@ -54,7 +54,7 @@
         /**
          * The headers being sent in the request.
          */
-        public $requestHeaders = array('Content-type' => 'text/html', 'Charset' => 'utf-8', 'Accept' => '*/*', 'Cache-control' => 'no-cache', 'Pragma' => 'no-cache');
+        public $requestHeaders = array();
 
         /**
          * 是否支持重定向(默认不支持)
@@ -943,12 +943,15 @@
         private function generateHeaders(): array
         {
             $options = array(
+                'Content-type' => Os::getAccept(),
                 'Accept ' => Os::getAccept(),
-                'Date' => gmdate('D, d M Y H:i:s \G\M\T')
+                'Charset' => 'utf-8',
+                'Cache-control' => 'no-cache',
+                'Date' => gmdate('D, d M Y H:i:s \G\M\T'),
+                'Pragma' => 'no-cache'
             );
 
             $headers = array_merge($options, $this->requestHeaders);
-
             return $headers;
         }
 
