@@ -9,7 +9,7 @@
      */
     final  class Mark
     {
-        const VERSION = '6.0.3';
+        const VERSION = '1.0.3';
 
         /**
          * 应用调试模式

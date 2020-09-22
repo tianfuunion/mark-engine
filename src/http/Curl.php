@@ -5,6 +5,7 @@
 
     use finfo;
     use Exception;
+    use mark\Mark;
     use mark\system\Os;
     use mark\http\response\HttpResponse;
 
@@ -53,7 +54,7 @@
         /**
          * The headers being sent in the request.
          */
-        public $request_headers = array('Content-type' => 'text/html', 'charset' => 'utf-8', 'accept' => '', 'cache_control' => 'no-cache', 'pragma' => 'no-cache');
+        public $request_headers = array('Content-type' => 'text/html', 'Charset' => 'utf-8', 'Accept' => '*/*', 'Cache-control' => 'no-cache', 'Pragma' => 'no-cache');
 
         /**
          * 是否支持重定向(默认不支持)
@@ -662,7 +663,7 @@
         {
             // 设置请求地址
             curl_setopt($this->getCurl(), CURLOPT_URL, $this->url);
-            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' Mark/1.0.0');
+            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' Mark/' . Mark::VERSION);
 
             //设置cURL允许执行的最长秒数。
             if ($this->timeout > 0) {
@@ -930,7 +931,8 @@
         private function generateHeaders(): array
         {
             $options = array(
-                'Accept ' => Os::getAccept(),
+                'Accept ' => Os::getAccept() . ' Mark/' . Mark::VERSION,
+                'User-Agent' => Os::getAgent(),
                 'Date' => gmdate('D, d M Y H:i:s \G\M\T')
             );
 
