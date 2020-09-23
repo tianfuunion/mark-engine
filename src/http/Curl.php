@@ -68,7 +68,7 @@
          */
         private $maxredirs = 10;
 
-        private $timeout = 600;
+        private $timeout = 60;
         /**
          * 在发起连接前等待的时间，如果设置为0，则不等待。
          * @var int
@@ -705,11 +705,11 @@
             // 让CURL支持页面连接跳转
             if ($this->location) {
                 curl_setopt($this->getCurl(), CURLOPT_FOLLOWLOCATION, true);
-            }
-            // 启用时会将服务器服务器返回的"Location: "放在header中递归的返回给服务器,使用CURLOPT_MAXREDIRS可以限定递归返回的数量。
-            if ($this->maxredirs) {
-                // 指定最多的HTTP重定向的数量,这个选项是和CURLOPT_FOLLOWLOCATION一起使用的
-                curl_setopt($this->getCurl(), CURLOPT_MAXREDIRS, 10);
+                // 启用时会将服务器服务器返回的"Location: "放在header中递归的返回给服务器,使用CURLOPT_MAXREDIRS可以限定递归返回的数量。
+                if ($this->maxredirs) {
+                    // 指定最多的HTTP重定向的数量,这个选项是和CURLOPT_FOLLOWLOCATION一起使用的
+                    curl_setopt($this->getCurl(), CURLOPT_MAXREDIRS, 10);
+                }
             }
 
             // 添加来源referer
@@ -717,7 +717,6 @@
 
             // 当根据Location:重定向时,自动设置header中的Referer:信息。
             curl_setopt($this->getCurl(), CURLOPT_AUTOREFERER, true);
-            // curl_setopt($this->getCurl(), CURLOPT_REFERER, "http://XXX"); // 在HTTP请求头中"Referer: "的内容。
 
             if ($this->cookie) {
                 curl_setopt($this->getCurl(), CURLOPT_COOKIE, $this->cookie);
@@ -945,10 +944,10 @@
         private function generateHeaders(): array
         {
             $options = array(
-                'Content-type' => Os::getAccept(),
+                'Content_type' => Os::getAccept(),
                 'Accept ' => Os::getAccept(),
                 'Charset' => 'utf-8',
-                'Cache-control' => 'no-cache',
+                'Cache_control' => 'no-cache',
                 'Date' => gmdate('D, d M Y H:i:s \G\M\T'),
                 'Pragma' => 'no-cache'
             );

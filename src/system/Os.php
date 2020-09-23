@@ -76,7 +76,7 @@
 
         /**
          * 获取客户端操作系统信息包括win10
-         *
+         * @link https://docs.microsoft.com/zh-cn/windows/win32/sysinfo/operating-system-version?redirectedfrom=MSDN
          * @param $flag
          * @return array|string
          * @example os|version|string|array
