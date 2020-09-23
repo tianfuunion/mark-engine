@@ -130,11 +130,8 @@
         /**
          * 创建Facade实例。
          *
-         * @static
-         * @access protected
-         *
          * @param bool $newInstance 是否每次创建新的实例
-         * @return self
+         * @return static
          */
         public static function getInstance(bool $newInstance = false): self
         {
@@ -153,7 +150,7 @@
          *
          * @return $this
          */
-        public function get(string $url, $type = 'html')
+        public function get(string $url, $type = 'text'): self
         {
             $this->url = $url;
             $this->method = 'get';
@@ -179,42 +176,42 @@
                     $this->addHeader('Content-Type', 'text/html');
                     $this->addHeader('Accept', 'text/html');
                     break;
-                case  'text':
+                case 'text':
                     $this->addHeader('Content-Type', 'text/plain');
                     $this->addHeader('Accept', 'text/plain');
                     break;
-                case  'xml':
+                case 'xml':
                     $this->addHeader('Content-Type', 'text/xml');
                     $this->addHeader('Accept', 'text/xml');
                     break;
 
-                case  'gif':
+                case 'gif':
                     $this->addHeader('Content-Type', 'image/gif');
                     $this->addHeader('Accept', 'image/gif');
                     break;
-                case  'jpeg':
+                case 'jpeg':
                     $this->addHeader('Content-Type', 'image/jpeg');
                     $this->addHeader('Accept', 'image/jpeg');
                     break;
-                case  'png':
+                case 'png':
                     $this->addHeader('Content-Type', 'image/png');
                     $this->addHeader('Accept', 'image/png');
                     break;
-                case  'webp':
+                case 'webp':
                     $this->addHeader('Content-Type', 'image/webp');
                     $this->addHeader('Accept', 'image/webp');
                     break;
 
-                case  'mp3':
+                case 'mp3':
                     $this->addHeader('Content-Type', 'audio/mp3');
                     $this->addHeader('Accept', 'audio/mp3');
                     break;
-                case  'wav':
+                case 'wav':
                     $this->addHeader('Content-Type', 'audio/wav');
                     $this->addHeader('Accept', 'audio/wav');
                     break;
 
-                case  'mp4':
+                case 'mp4':
                     $this->addHeader('Content-Type', 'video/mpeg4');
                     $this->addHeader('Accept', 'video/mpeg4');
                     break;
@@ -236,7 +233,7 @@
          *
          * @return $this
          */
-        public function post(string $url, $data = array()): self
+        public function post(string $url, array $data = array()): self
         {
             $this->url = $url;
             $this->method = 'post';
@@ -250,17 +247,17 @@
          * 上传文件
          *
          * @param string $url
-         *
+         * @param array $data
          * @return $this
          */
-        public function upload(string $url): self
+        public function upload(string $url, array $data = array()): self
         {
             $this->url = $url;
             $this->method = 'upload';
             $this->addHeader('Content-Type', 'multipart/form-data');
             $this->addHeader('Accept', 'multipart/form-data');
 
-            return $this->initialize();
+            return $this->initialize()->append($data);
         }
 
         /**
@@ -270,18 +267,14 @@
          * @param string $savePath
          * @param string $fileName
          * @param string $suffix
-         *
-         * @return $this|array
+         * @return $this
          */
-        public function download(string $url, $savePath = '', $fileName = '', $suffix = ''): self
+        public function download(string $url, string $savePath = '', string $fileName = '', string $suffix = ''): self
         {
             $this->method = 'download';
             $this->addHeader('Content-Type', 'application/octet-stream');
             $this->addHeader('Accept', 'application/octet-stream');
 
-            if (empty(trim($url))) {
-                return array('file_name' => '', 'save_path' => '', 'error' => 1);
-            }
             $this->url = trim($url);
             // 设置文件保存路径
             $this->setFilePath($savePath);
@@ -301,7 +294,7 @@
          * @param string $filepath
          * @return $this
          */
-        public function setFilePath($filepath = ''): self
+        public function setFilePath(string $filepath = ''): self
         {
             if (trim($filepath) != '') {
                 $this->filePath = trim($filepath);
@@ -335,10 +328,10 @@
          * @param string $filename
          * @return $this
          */
-        public function setFileName($filename = ''): self
+        public function setFileName(string $filename = ''): self
         {
             //保存文件名
-            if (trim($filename) != '') {
+            if (!empty(trim($filename))) {
                 $this->fileName = trim($filename);
             }
             return $this;
@@ -349,14 +342,14 @@
          * @param bool $all
          * @return string
          */
-        public function getFileName($all = true): string
+        public function getFileName(bool $complete = true): string
         {
             if ($this->fileName !== '') {
-                return $this->fileName . ($all == true ? '.' . $this->getFileSuffix() : '');
+                return $this->fileName . ($complete ? '.' . $this->getFileSuffix() : '');
             }
             // 后缀为空则使用文件名后缀
             $filename = pathinfo($this->fileName, PATHINFO_BASENAME);
-            if ($filename !== '') {
+            if (!empty($filename)) {
                 return $filename . '.' . $this->getFileSuffix();
             }
             // 文件名后缀为空则使用Url后缀
@@ -378,9 +371,9 @@
          * @param string $suffix
          * @return $this
          */
-        public function setFileSuffix($suffix = ''): self
+        public function setFileSuffix(string $suffix = ''): self
         {
-            if (trim($suffix) !== '') {
+            if (!empty(trim($suffix))) {
                 $this->fileSuffix = trim($suffix);
             }
 
@@ -394,7 +387,7 @@
         public function getFileSuffix()
         {
             // 后缀判断
-            if ($this->fileSuffix != '') {
+            if (!empty($this->fileSuffix)) {
                 return $this->fileSuffix;
             }
             // 后缀为空则使用文件名后缀
@@ -417,7 +410,6 @@
          * Put 请求
          *
          * @param string $url
-         *
          * @return $this
          */
         public function put(string $url): self
@@ -441,7 +433,13 @@
             return $this;
         }
 
-        public function ftp($url): self
+        /**
+         * FTP 请求
+         *
+         * @param $url
+         * @return $this
+         */
+        public function ftp(string $url): self
         {
             $this->url = $url;
 
@@ -453,7 +451,7 @@
          *
          * @return string
          */
-        public function toJson()
+        public function toJson(): string
         {
             $json = $this->execute();
             if ($this->getResponseCode() == 200) {
@@ -476,7 +474,7 @@
          *
          * @return array
          */
-        public function toArray()
+        public function toArray(): array
         {
             $json = $this->execute();
             if ($this->getResponseCode() == 200) {
@@ -498,7 +496,6 @@
          * 添加请求数据，后添加会覆盖之后添加的数据
          *
          * @param $data
-         *
          * @return $this
          */
         public function append($data): self
@@ -543,6 +540,12 @@
             return $this;
         }
 
+        /**
+         * 递归添加数据
+         *
+         * @param $data
+         * @return $this
+         */
         public function appendRecursive($data): self
         {
             if (!empty($data)) {
@@ -552,6 +555,14 @@
             return $this;
         }
 
+        /**
+         * 向指定字段添加数据
+         *
+         * @param $key
+         * @param $field
+         * @param $value
+         * @return $this
+         */
         public function appendPush($key, $field, $value): self
         {
             if (!empty($value)) {
@@ -561,6 +572,13 @@
             return $this;
         }
 
+        /**
+         * 追加数据
+         *
+         * @param $key
+         * @param $value
+         * @return $this
+         */
         public function push($key, $value): self
         {
             if (!empty($value)) {
@@ -585,12 +603,12 @@
         /**
          * 添加多个文件
          *
-         * @param $key
+         * @param string $key
          * @param $file
          *
          * @return $this
          */
-        public function appendFiles($key, $file): self
+        public function appendFiles(string $key, $file): self
         {
             if (file_exists(realpath($file))) {
                 $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -686,7 +704,7 @@
             //设置请求头(可有可无)
             curl_setopt($this->getCurl(), CURLOPT_HTTPHEADER, $this->getHeader());
 
-            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' MarK/' . Mark::VERSION);
+            curl_setopt($this->getCurl(), CURLOPT_USERAGENT, Os::getAgent() . ' Mark/' . Mark::VERSION);
 
             //设置cURL允许执行的最长秒数。
             if ($this->timeout > 0) {
@@ -899,7 +917,7 @@
          * @param string $charset
          * @return $this
          */
-        public function setCharset($charset = 'utf-8'): self
+        public function setCharset(string $charset = 'utf-8'): self
         {
             $this->addHeader('charset', $charset);
 
@@ -915,8 +933,9 @@
          * @param mixed $value (Required) The value to assign to the custom HTTP header.
          * @return $this A reference to the current instance.
          */
-        public function addHeader($key, $value): self
+        public function addHeader(string $key, $value): self
         {
+            $key = strtolower(trim($key));
             $this->requestHeaders[$key] = $value;
 
             return $this;
@@ -928,32 +947,36 @@
          * @param string $key (Required) The custom HTTP header to set.
          * @return $this A reference to the current instance.
          */
-        public function removeHeader($key): self
+        public function removeHeader(string $key): self
         {
+            $key = strtolower(trim($key));
             if (isset($this->requestHeaders[$key])) {
                 unset($this->requestHeaders[$key]);
             }
+
             return $this;
         }
 
         /**
          * Initialize headers
-         *
          * @return array
+         * @todo 指定Header时，是否应该将本机的Header添加至后边
          */
         private function generateHeaders(): array
         {
             $options = array(
-                'Content_type' => Os::getAccept(),
-                'Accept ' => Os::getAccept(),
-                'Charset' => 'utf-8',
-                'Cache_control' => 'no-cache',
-                'Date' => gmdate('D, d M Y H:i:s \G\M\T'),
-                'Pragma' => 'no-cache'
+                'content-type' => Os::getAccept(),
+                'accept' => Os::getAccept(),
+                'charset' => 'utf-8',
+                'cache-control' => 'no-cache',
+                'pragma' => 'no-cache',
+                'date' => gmdate('D, d M Y H:i:s \G\M\T'),
+                'expect' => ''
             );
 
-            $headers = array_merge($options, $this->requestHeaders);
-            return $headers;
+            $this->requestHeaders = array_merge($options, $this->requestHeaders);
+
+            return $this->requestHeaders;
         }
 
         /**
@@ -963,13 +986,11 @@
          */
         private function getHeader(): array
         {
-            $this->requestHeaders = $this->generateHeaders();
-
             $temp_headers = array();
-            foreach ($this->requestHeaders as $k => $v) {
-                $temp_headers[] = $k . ': ' . $v;
+            foreach ($this->generateHeaders() as $k => $v) {
+                $temp_headers[] = $k . ':' . $v;
             }
-            $temp_headers[] = 'Expect:';
+
             return $temp_headers;
         }
 
@@ -984,6 +1005,7 @@
             if (intval($this->responseCode) == 0) {
                 $this->execute();
             }
+
             return intval($this->responseCode);
         }
 
@@ -1005,6 +1027,7 @@
                     return $header;
                 }
             }
+
             return $this->responseHeaderContent;
         }
 
@@ -1018,6 +1041,7 @@
             if ($this->getResponseCode() == 0) {
                 $this->execute();
             }
+
             return $this->responseHeaderSize;
         }
 
@@ -1031,6 +1055,7 @@
             if ($this->getResponseCode() == 0) {
                 $this->execute();
             }
+
             return curl_getinfo($this->getCurl());
         }
 
@@ -1048,6 +1073,7 @@
                     $this->curl = curl_init() or die('Curl初始化失败');
                 }
             }
+
             return $this->curl;
         }
 
@@ -1061,6 +1087,7 @@
             if ($this->getResponseCode() == 0) {
                 $this->execute();
             }
+
             return curl_error($this->getCurl());
         }
 
@@ -1084,6 +1111,7 @@
         public function setHttpResponse(HttpResponse $HttpResponse): self
         {
             $this->HttpResponse = $HttpResponse;
+
             return $this;
         }
 
@@ -1151,7 +1179,7 @@
          *
          * @return $this
          */
-        public function __call($method, $params)
+        public function __call($method, $params): self
         {
             list($key, $value) = $params;
             $this->$key = $value;
@@ -1162,7 +1190,6 @@
         /**
          * 获取当前Facade对应类名
          *
-         * @access protected
          * @return string
          */
         protected static function getFacadeClass(): string
@@ -1184,7 +1211,7 @@
          *
          * @return Curl
          */
-        protected static function createFacade(bool $newInstance = false)
+        protected static function createFacade(bool $newInstance = false): self
         {
             $class = self::getFacadeClass() ?: 'mark\http\Curl';
 
