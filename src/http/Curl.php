@@ -54,7 +54,7 @@
         /**
          * The headers being sent in the request.
          */
-        public $requestHeaders = array();
+        private $requestHeaders = array();
 
         /**
          * 是否支持重定向(默认不支持)
@@ -159,69 +159,69 @@
             $this->method = 'get';
             switch ($type) {
                 case 'json':
-                    $this->add_header('Content-Type', 'application/json');
-                    $this->add_header('Accept', 'application/json');
+                    $this->addHeader('Content-Type', 'application/json');
+                    $this->addHeader('Accept', 'application/json');
                     break;
                 case 'pdf':
-                    $this->add_header('Content-Type', 'application/pdf');
-                    $this->add_header('Accept', 'application/pdf');
+                    $this->addHeader('Content-Type', 'application/pdf');
+                    $this->addHeader('Accept', 'application/pdf');
                     break;
                 case 'msword':
-                    $this->add_header('Content-Type', 'application/msword');
-                    $this->add_header('Accept', 'application/msword');
+                    $this->addHeader('Content-Type', 'application/msword');
+                    $this->addHeader('Accept', 'application/msword');
                     break;
                 case 'stream':
-                    $this->add_header('Content-Type', 'application/octet-stream');
-                    $this->add_header('Accept', 'application/octet-stream');
+                    $this->addHeader('Content-Type', 'application/octet-stream');
+                    $this->addHeader('Accept', 'application/octet-stream');
                     break;
 
                 case 'html':
-                    $this->add_header('Content-Type', 'text/html');
-                    $this->add_header('Accept', 'text/html');
+                    $this->addHeader('Content-Type', 'text/html');
+                    $this->addHeader('Accept', 'text/html');
                     break;
                 case  'text':
-                    $this->add_header('Content-Type', 'text/plain');
-                    $this->add_header('Accept', 'text/plain');
+                    $this->addHeader('Content-Type', 'text/plain');
+                    $this->addHeader('Accept', 'text/plain');
                     break;
                 case  'xml':
-                    $this->add_header('Content-Type', 'text/xml');
-                    $this->add_header('Accept', 'text/xml');
+                    $this->addHeader('Content-Type', 'text/xml');
+                    $this->addHeader('Accept', 'text/xml');
                     break;
 
                 case  'gif':
-                    $this->add_header('Content-Type', 'image/gif');
-                    $this->add_header('Accept', 'image/gif');
+                    $this->addHeader('Content-Type', 'image/gif');
+                    $this->addHeader('Accept', 'image/gif');
                     break;
                 case  'jpeg':
-                    $this->add_header('Content-Type', 'image/jpeg');
-                    $this->add_header('Accept', 'image/jpeg');
+                    $this->addHeader('Content-Type', 'image/jpeg');
+                    $this->addHeader('Accept', 'image/jpeg');
                     break;
                 case  'png':
-                    $this->add_header('Content-Type', 'image/png');
-                    $this->add_header('Accept', 'image/png');
+                    $this->addHeader('Content-Type', 'image/png');
+                    $this->addHeader('Accept', 'image/png');
                     break;
                 case  'webp':
-                    $this->add_header('Content-Type', 'image/webp');
-                    $this->add_header('Accept', 'image/webp');
+                    $this->addHeader('Content-Type', 'image/webp');
+                    $this->addHeader('Accept', 'image/webp');
                     break;
 
                 case  'mp3':
-                    $this->add_header('Content-Type', 'audio/mp3');
-                    $this->add_header('Accept', 'audio/mp3');
+                    $this->addHeader('Content-Type', 'audio/mp3');
+                    $this->addHeader('Accept', 'audio/mp3');
                     break;
                 case  'wav':
-                    $this->add_header('Content-Type', 'audio/wav');
-                    $this->add_header('Accept', 'audio/wav');
+                    $this->addHeader('Content-Type', 'audio/wav');
+                    $this->addHeader('Accept', 'audio/wav');
                     break;
 
                 case  'mp4':
-                    $this->add_header('Content-Type', 'video/mpeg4');
-                    $this->add_header('Accept', 'video/mpeg4');
+                    $this->addHeader('Content-Type', 'video/mpeg4');
+                    $this->addHeader('Accept', 'video/mpeg4');
                     break;
 
                 default:
-                    $this->add_header('Content-Type', 'application/x-www-data-urlencode');
-                    $this->add_header('Accept', 'application/x-www-data-urlencode');
+                    $this->addHeader('Content-Type', 'application/x-www-data-urlencode');
+                    $this->addHeader('Accept', 'application/x-www-data-urlencode');
                     break;
             }
 
@@ -240,8 +240,8 @@
         {
             $this->url = $url;
             $this->method = 'post';
-            $this->add_header('Content-Type', 'application/x-www-form-urlencode');
-            $this->add_header('Accept', 'application/x-www-form-urlencode');
+            $this->addHeader('Content-Type', 'application/x-www-form-urlencode');
+            $this->addHeader('Accept', 'application/x-www-form-urlencode');
 
             return $this->initialize()->append($data);
         }
@@ -257,8 +257,8 @@
         {
             $this->url = $url;
             $this->method = 'upload';
-            $this->add_header('Content-Type', 'multipart/form-data');
-            $this->add_header('Accept', 'multipart/form-data');
+            $this->addHeader('Content-Type', 'multipart/form-data');
+            $this->addHeader('Accept', 'multipart/form-data');
 
             return $this->initialize();
         }
@@ -276,8 +276,8 @@
         public function download(string $url, $savePath = '', $fileName = '', $suffix = ''): self
         {
             $this->method = 'download';
-            $this->add_header('Content-Type', 'application/octet-stream');
-            $this->add_header('Accept', 'application/octet-stream');
+            $this->addHeader('Content-Type', 'application/octet-stream');
+            $this->addHeader('Accept', 'application/octet-stream');
 
             if (empty(trim($url))) {
                 return array('file_name' => '', 'save_path' => '', 'error' => 1);
@@ -543,7 +543,7 @@
             return $this;
         }
 
-        public function append_recursive($data): self
+        public function appendRecursive($data): self
         {
             if (!empty($data)) {
                 $this->formData = array_merge_recursive($this->formData, $data);
@@ -552,7 +552,7 @@
             return $this;
         }
 
-        public function append_push($key, $field, $value): self
+        public function appendPush($key, $field, $value): self
         {
             if (!empty($value)) {
                 $this->formData[$key][$field] = $value;
@@ -878,11 +878,13 @@
                 // 保存文件到制定路径
                 $bytes = file_put_contents($this->getFilePath() . '/' . $this->getFileName(), $result);
                 if ($bytes) {
-                    return array('bytes' => $bytes,
+                    return array(
+                        'bytes' => $bytes,
                         'url' => $this->url,
                         'path' => $this->getFilePath(),
                         'name' => $this->getFileName(),
-                        'suffix' => $this->getFileSuffix());
+                        'suffix' => $this->getFileSuffix()
+                    );
                 }
                 $this->errmsg[] = '保存文件失败';
 
@@ -900,7 +902,7 @@
          */
         public function setCharset($charset = 'utf-8'): self
         {
-            $this->add_header('charset', $charset);
+            $this->addHeader('charset', $charset);
 
             return $this;
         }
@@ -914,7 +916,7 @@
          * @param mixed $value (Required) The value to assign to the custom HTTP header.
          * @return $this A reference to the current instance.
          */
-        public function add_header($key, $value): self
+        public function addHeader($key, $value): self
         {
             $this->requestHeaders[$key] = $value;
 
@@ -927,7 +929,7 @@
          * @param string $key (Required) The custom HTTP header to set.
          * @return $this A reference to the current instance.
          */
-        public function remove_header($key): self
+        public function removeHeader($key): self
         {
             if (isset($this->requestHeaders[$key])) {
                 unset($this->requestHeaders[$key]);
