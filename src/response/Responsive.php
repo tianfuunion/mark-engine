@@ -288,7 +288,7 @@
                 return response($response);
             }
 
-            if ($type === 'origin') {
+            if ($type === 'origin' || $type === 'array') {
                 return $response;
             }
 
